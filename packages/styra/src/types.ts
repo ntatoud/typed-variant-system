@@ -33,13 +33,15 @@ export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
   [K in keyof V as K extends keyof D ? never : K]: PropTypeOf<V[K]>;
 } & { [K in keyof V as K extends keyof D ? K : never]?: PropTypeOf<V[K]> } & {
   class?: string;
-  className?: string;
+  className?: string | ((...args: never[]) => string | undefined);
 };
 
 /** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`. */
 export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   (
-    props: keyof V extends never ? { class?: string; className?: string } : InferProps<V, D>,
+    props: keyof V extends never
+      ? { class?: string; className?: string | ((...args: never[]) => string | undefined) }
+      : InferProps<V, D>,
   ): string;
   /**
    * Define variant keys and their class mappings.

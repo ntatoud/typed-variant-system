@@ -30,6 +30,13 @@ function matchesCompound<V extends VariantMap>(
 
 type Resolver = { key: string; map: Record<string, string>; def: string | undefined };
 
+/** Resolve a className prop that may be a string or a render-prop function. */
+function resolveClassName(v: unknown): string | undefined {
+  if (typeof v === "string") return v || undefined;
+  if (typeof v === "function") return (v as () => string | undefined)() || undefined;
+  return undefined;
+}
+
 /** Coerce a prop value to its string key for map lookup (handles booleans from boolean shorthand). */
 function toKey(v: unknown): string | undefined {
   if (v === undefined || v === null) return undefined;
@@ -90,10 +97,10 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
         }
       }
 
-      const extra = props["class"];
-      if (typeof extra === "string" && extra) classes.push(extra);
-      const extraCn = props["className"];
-      if (typeof extraCn === "string" && extraCn) classes.push(extraCn);
+      const extra = resolveClassName(props["class"]);
+      if (extra) classes.push(extra);
+      const extraCn = resolveClassName(props["className"]);
+      if (extraCn) classes.push(extraCn);
 
       return customMerge(...classes);
     }
@@ -129,10 +136,10 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
       }
     }
 
-    const extra = props["class"];
-    if (typeof extra === "string" && extra) result = result ? result + " " + extra : extra;
-    const extraCn = props["className"];
-    if (typeof extraCn === "string" && extraCn) result = result ? result + " " + extraCn : extraCn;
+    const extra = resolveClassName(props["class"]);
+    if (extra) result = result ? result + " " + extra : extra;
+    const extraCn = resolveClassName(props["className"]);
+    if (extraCn) result = result ? result + " " + extraCn : extraCn;
 
     return result;
   }

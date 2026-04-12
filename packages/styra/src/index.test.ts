@@ -21,6 +21,16 @@ describe("styra — base class", () => {
     const btn = styra("btn");
     expect(btn({ class: "mt-2", className: "mt-4" })).toBe("btn mt-2 mt-4");
   });
+
+  it("calls className function with no args and appends result", () => {
+    const btn = styra("btn");
+    expect(btn({ className: () => "mt-4" })).toBe("btn mt-4");
+  });
+
+  it("ignores className function that returns undefined", () => {
+    const btn = styra("btn");
+    expect(btn({ className: () => undefined })).toBe("btn");
+  });
 });
 
 describe("styra — variants", () => {
