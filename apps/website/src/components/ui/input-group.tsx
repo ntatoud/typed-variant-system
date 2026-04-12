@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, styra } from "@/lib/utils";
+import { type VariantProps, cn, styra } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,7 +39,7 @@ function InputGroupAddon({
   className,
   align = "inline-start",
   ...props
-}: React.ComponentProps<"div"> & Parameters<typeof inputGroupAddonVariants>[0]) {
+}: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
   return (
     <div
       role="group"
@@ -77,7 +77,7 @@ function InputGroupButton({
   size = "xs",
   ...props
 }: Omit<React.ComponentProps<typeof Button>, "size" | "type"> &
-  Parameters<typeof inputGroupButtonVariants>[0] & {
+  VariantProps<typeof inputGroupButtonVariants> & {
     type?: "button" | "submit" | "reset";
   }) {
   return (

@@ -4,7 +4,7 @@ import * as React from "react";
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn, styra } from "@/lib/utils";
+import { type VariantProps, cn, styra } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -484,7 +484,7 @@ function SidebarMenuButton({
   React.ComponentProps<"button"> & {
     isActive?: boolean;
     tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-  } & Parameters<typeof sidebarMenuButtonVariants>[0]) {
+  } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar();
   const comp = useRender({
     defaultTagName: "button",

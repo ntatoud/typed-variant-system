@@ -134,6 +134,7 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
             <Button size="sm">Small</Button>
             <Button size="lg">Large</Button>
             <Button disabled>Disabled</Button>
+            <Button fullWidth>Full width</Button>
           </Section>
 
           {/* Badge */}
