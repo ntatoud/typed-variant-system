@@ -1,6 +1,7 @@
 import * as React from "react";
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { type VariantProps, cn, styra } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -57,17 +58,19 @@ function InputGroupAddon({
   );
 }
 
-const inputGroupButtonVariants = styra("flex items-center gap-2 text-sm shadow-none")
-  .variants({
+const inputGroupButtonVariants = buttonVariants
+  .extend({
     size: {
-      xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
-      sm: "",
-      "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0",
-      "icon-sm": "size-8 p-0 has-[>svg]:p-0",
+      xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 shadow-none [&>svg:not([class*='size-'])]:size-3.5",
+      sm: "shadow-none",
+      "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 shadow-none has-[>svg]:p-0",
+      "icon-sm": "size-8 p-0 shadow-none has-[>svg]:p-0",
     },
   })
   .defaults({
     size: "xs",
+    variant: "ghost",
+    loading: false,
   });
 
 function InputGroupButton({
@@ -75,17 +78,15 @@ function InputGroupButton({
   type = "button",
   variant = "ghost",
   size = "xs",
+  loading = false,
   ...props
-}: Omit<React.ComponentProps<typeof Button>, "size" | "type"> &
-  VariantProps<typeof inputGroupButtonVariants> & {
-    type?: "button" | "submit" | "reset";
-  }) {
+}: React.ComponentProps<typeof ButtonPrimitive> & VariantProps<typeof inputGroupButtonVariants>) {
   return (
-    <Button
+    <ButtonPrimitive
       type={type}
+      data-slot="button"
       data-size={size}
-      variant={variant}
-      className={inputGroupButtonVariants({ size, className })}
+      className={inputGroupButtonVariants({ variant, size, loading, className })}
       {...props}
     />
   );
