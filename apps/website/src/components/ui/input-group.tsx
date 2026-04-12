@@ -62,8 +62,8 @@ const inputGroupButtonVariants = buttonVariants
   .extend({
     size: {
       xs: "rounded-[calc(var(--radius)-3px)] px-1.5",
-      "icon-xs": "size-5 rounded-[calc(var(--radius)-3px)]",
-      "icon-sm": "size-6",
+      "icon-xs": "rounded-[calc(var(--radius)-3px)] p-1",
+      "icon-sm": "p-1",
     },
   })
   .defaults({
