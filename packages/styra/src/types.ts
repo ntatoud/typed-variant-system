@@ -1,17 +1,24 @@
 export type MergeFn = (...classes: string[]) => string;
 
-/** A map of variant keys to their possible values and classes. */
-export type VariantMap = Record<string, Record<string, string>>;
+/**
+ * A map of variant keys to their possible values and classes.
+ * Values can be a `Record<string, string>` (explicit map) or a plain `string`
+ * (boolean shorthand — applied when the prop is `true`, skipped when `false`/`undefined`).
+ */
+export type VariantMap = Record<string, Record<string, string> | string>;
+
+/** Resolve the call-site prop type for a single variant value definition. */
+type PropTypeOf<V> = V extends string ? boolean : keyof V;
 
 /** Partial defaults for a given variant map. */
-export type DefaultsOf<V extends VariantMap> = Partial<{ [K in keyof V]: keyof V[K] }>;
+export type DefaultsOf<V extends VariantMap> = Partial<{ [K in keyof V]: PropTypeOf<V[K]> }>;
 
 /** A single negation condition. */
 export type Not<T> = { not: T };
 
 /** Per-key condition in a compound rule: exact value or negation. */
 export type CompoundCondition<V extends VariantMap> = {
-  [K in keyof V]?: keyof V[K] | Not<keyof V[K]>;
+  [K in keyof V]?: PropTypeOf<V[K]> | Not<PropTypeOf<V[K]>>;
 };
 
 /** A compound variant rule: conditions + the class to apply when they match. */
@@ -23,8 +30,8 @@ export type CompoundRule<V extends VariantMap> = CompoundCondition<V> & { class:
  * - Variants without a default → required
  */
 export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
-  [K in keyof V as K extends keyof D ? never : K]: keyof V[K];
-} & { [K in keyof V as K extends keyof D ? K : never]?: keyof V[K] } & {
+  [K in keyof V as K extends keyof D ? never : K]: PropTypeOf<V[K]>;
+} & { [K in keyof V as K extends keyof D ? K : never]?: PropTypeOf<V[K]> } & {
   class?: string;
   className?: string;
 };

@@ -14,11 +14,14 @@ function matchesCompound<V extends VariantMap>(
 ): boolean {
   for (const key in rule) {
     if (key === "class") continue;
-    const condition = (rule as Record<string, unknown>)[key];
+    const rawCondition = (rule as Record<string, unknown>)[key];
     const value = resolved[key];
-    if (condition !== null && typeof condition === "object" && "not" in condition) {
-      if (value === (condition as Not<unknown>).not) return false;
+    if (rawCondition !== null && typeof rawCondition === "object" && "not" in rawCondition) {
+      const notVal =
+        toKey((rawCondition as Not<unknown>).not) ?? (rawCondition as Not<unknown>).not;
+      if (value === notVal) return false;
     } else {
+      const condition = toKey(rawCondition) ?? rawCondition;
       if (value !== condition) return false;
     }
   }
@@ -26,6 +29,14 @@ function matchesCompound<V extends VariantMap>(
 }
 
 type Resolver = { key: string; map: Record<string, string>; def: string | undefined };
+
+/** Coerce a prop value to its string key for map lookup (handles booleans from boolean shorthand). */
+function toKey(v: unknown): string | undefined {
+  if (v === undefined || v === null) return undefined;
+  if (v === true) return "true";
+  if (v === false) return "false";
+  return v as string;
+}
 
 function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
   base: string,
@@ -36,12 +47,17 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
   variantsLocked: boolean,
 ): StyraBuilder<V, D> {
   // Flatten variant lookup at build time: one array, no double property access per call
-  const defaultMapRaw = defaultMap as Record<string, string | undefined>;
-  const resolvers: Resolver[] = Object.keys(variantMap).map((key) => ({
-    key,
-    map: variantMap[key] as Record<string, string>,
-    def: defaultMapRaw[key],
-  }));
+  const defaultMapRaw = defaultMap as Record<string, unknown>;
+  const resolvers: Resolver[] = Object.keys(variantMap).map((key) => {
+    const raw = variantMap[key];
+    // Boolean shorthand: a plain string becomes { true: string, false: "" }
+    const map: Record<string, string> =
+      typeof raw === "string" ? { true: raw, false: "" } : (raw as Record<string, string>);
+    const def = defaultMapRaw[key];
+    // Coerce boolean defaults to their string key equivalents for map lookup
+    const defStr = def === true ? "true" : def === false ? "false" : (def as string | undefined);
+    return { key, map, def: defStr };
+  });
   const hasCompound = compoundRules.length > 0;
 
   function call(props: Record<string, unknown>): string {
@@ -53,7 +69,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
         const resolved: Record<string, unknown> = {};
         for (let i = 0; i < resolvers.length; i++) {
           const { key, map, def } = resolvers[i]!;
-          const value = (props[key] ?? def) as string | undefined;
+          const value = toKey(props[key]) ?? def;
           resolved[key] = value;
           if (value !== undefined) {
             const cls = map[value];
@@ -66,7 +82,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
       } else {
         for (let i = 0; i < resolvers.length; i++) {
           const { key, map, def } = resolvers[i]!;
-          const value = (props[key] ?? def) as string | undefined;
+          const value = toKey(props[key]) ?? def;
           if (value !== undefined) {
             const cls = map[value];
             if (cls) classes.push(cls);
@@ -89,7 +105,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
       const resolved: Record<string, unknown> = {};
       for (let i = 0; i < resolvers.length; i++) {
         const { key, map, def } = resolvers[i]!;
-        const value = (props[key] ?? def) as string | undefined;
+        const value = toKey(props[key]) ?? def;
         resolved[key] = value;
         if (value !== undefined) {
           const cls = map[value];
@@ -105,7 +121,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
     } else {
       for (let i = 0; i < resolvers.length; i++) {
         const { key, map, def } = resolvers[i]!;
-        const value = (props[key] ?? def) as string | undefined;
+        const value = toKey(props[key]) ?? def;
         if (value !== undefined) {
           const cls = map[value];
           if (cls) result = result ? result + " " + cls : cls;

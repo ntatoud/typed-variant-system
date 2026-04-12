@@ -84,6 +84,31 @@ describe("styra — compound variants with negation", () => {
   });
 });
 
+describe("styra — boolean variant shorthand", () => {
+  const btn = styra("btn").variants({
+    disabled: "opacity-50 pointer-events-none",
+    active: "ring-2",
+  });
+
+  it("applies shorthand class when prop is true", () => {
+    expect(btn({ disabled: true, active: false })).toBe("btn opacity-50 pointer-events-none");
+  });
+
+  it("applies nothing when prop is false", () => {
+    expect(btn({ disabled: false, active: false })).toBe("btn");
+  });
+
+  it("multiple boolean variants together", () => {
+    expect(btn({ disabled: true, active: true })).toBe("btn opacity-50 pointer-events-none ring-2");
+  });
+
+  it("uses default value for boolean shorthand", () => {
+    const btn2 = styra("btn").variants({ disabled: "opacity-50" }).defaults({ disabled: false });
+    expect(btn2({})).toBe("btn");
+    expect(btn2({ disabled: true })).toBe("btn opacity-50");
+  });
+});
+
 describe("styra — error on double .variants()", () => {
   it("throws if .variants() is called a second time", () => {
     const builder = styra("btn").variants({ size: { sm: "text-sm" } });
