@@ -31,26 +31,26 @@ const buttonVariants = styra(
         "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
       "icon-lg": "size-9",
     },
-    fullWidth: "w-full",
+    loading: "cursor-wait opacity-75 pointer-events-none [&_svg]:animate-spin",
   })
   .defaults({
     size: "default",
     variant: "default",
-    fullWidth: false,
+    loading: false,
   });
 
 function Button({
   className,
   variant = "default",
   size = "default",
-  fullWidth = false,
+  loading = false,
   ...props
 }: Omit<ButtonPrimitive.Props, "className"> &
   VariantProps<typeof buttonVariants> & { className?: string }) {
   return (
     <ButtonPrimitive
       data-slot="button"
-      className={buttonVariants({ variant, size, fullWidth, className })}
+      className={buttonVariants({ variant, size, loading, className })}
       {...props}
     />
   );
