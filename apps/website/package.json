@@ -11,13 +11,12 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@fontsource-variable/geist": "catalog:",
-    "clsx": "catalog:",
+    "@ntatoud/styra": "workspace:*",
     "cmdk": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "shadcn": "catalog:",
-    "styra": "workspace:*",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:"
   },

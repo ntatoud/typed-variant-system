@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { styra } from "styra";
+import { styra } from "@ntatoud/styra";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 

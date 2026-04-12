@@ -7,8 +7,8 @@
     "bench": "vp exec tsx src/index.ts"
   },
   "dependencies": {
-    "cva": "1.0.0-beta.4",
-    "styra": "workspace:*"
+    "@ntatoud/styra": "workspace:*",
+    "cva": "1.0.0-beta.4"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

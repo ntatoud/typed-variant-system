@@ -1,4 +1,5 @@
 import type {
+  ClassValue,
   CompoundRule,
   DefaultsOf,
   MergeFn,
@@ -30,11 +31,37 @@ function matchesCompound<V extends VariantMap>(
 
 type Resolver = { key: string; map: Record<string, string>; def: string | undefined };
 
-/** Resolve a className prop that may be a string or a render-prop function. */
+/** Recursively resolve a clsx-like value to a string. */
+function toVal(mix: ClassValue): string {
+  let str = "";
+  if (typeof mix === "string" || typeof mix === "number") {
+    str += mix;
+  } else if (Array.isArray(mix)) {
+    for (let k = 0; k < mix.length; k++) {
+      if (mix[k]) {
+        const y = toVal(mix[k] as ClassValue);
+        if (y) {
+          str && (str += " ");
+          str += y;
+        }
+      }
+    }
+  } else if (mix !== null && typeof mix === "object") {
+    for (const y in mix) {
+      if ((mix as Record<string, unknown>)[y]) {
+        str && (str += " ");
+        str += y;
+      }
+    }
+  }
+  return str;
+}
+
+/** Resolve a className prop that may be a clsx-like value or a render-prop function. */
 function resolveClassName(v: unknown): string | undefined {
-  if (typeof v === "string") return v || undefined;
-  if (typeof v === "function") return (v as () => string | undefined)() || undefined;
-  return undefined;
+  if (typeof v === "function") return toVal((v as () => ClassValue)()) || undefined;
+  const result = toVal(v as ClassValue);
+  return result || undefined;
 }
 
 /** Coerce a prop value to its string key for map lookup (handles booleans from boolean shorthand). */
@@ -163,6 +190,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
 }
 
 export type {
+  ClassValue,
   StyraBuilder,
   StyraOptions,
   VariantMap,
@@ -179,7 +207,7 @@ export type {
  * import { createStyra } from 'styra'
  * import { twMerge } from 'tailwind-merge'
  *
- * export const { styra } = createStyra({ merge: twMerge })
+ * export const { styra, cn } = createStyra({ merge: twMerge })
  * ```
  */
 export function createStyra(options?: StyraOptions) {
@@ -196,8 +224,20 @@ export function createStyra(options?: StyraOptions) {
     );
   }
 
-  return { styra };
+  function cn(...args: ClassValue[]): string {
+    let str = "";
+    for (let i = 0; i < args.length; i++) {
+      const val = toVal(args[i]);
+      if (val) {
+        str && (str += " ");
+        str += val;
+      }
+    }
+    return customMerge ? customMerge(str) : str;
+  }
+
+  return { styra, cn };
 }
 
 /** Default `styra` instance with no custom merge function. */
-export const { styra } = createStyra();
+export const { styra, cn } = createStyra();

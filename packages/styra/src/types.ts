@@ -1,5 +1,15 @@
 export type MergeFn = (...classes: string[]) => string;
 
+/** A clsx-compatible class value: string, number, boolean, null, undefined, array, or object map. */
+export type ClassValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | ClassValue[]
+  | Record<string, unknown>;
+
 /**
  * A map of variant keys to their possible values and classes.
  * Values can be a `Record<string, string>` (explicit map) or a plain `string`
@@ -32,15 +42,15 @@ export type CompoundRule<V extends VariantMap> = CompoundCondition<V> & { class:
 export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
   [K in keyof V as K extends keyof D ? never : K]: PropTypeOf<V[K]>;
 } & { [K in keyof V as K extends keyof D ? K : never]?: PropTypeOf<V[K]> } & {
-  class?: string;
-  className?: string | ((...args: never[]) => string | undefined);
+  class?: ClassValue;
+  className?: ClassValue | ((...args: never[]) => ClassValue);
 };
 
 /** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`. */
 export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   (
     props: keyof V extends never
-      ? { class?: string; className?: string | ((...args: never[]) => string | undefined) }
+      ? { class?: ClassValue; className?: ClassValue | ((...args: never[]) => ClassValue) }
       : InferProps<V, D>,
   ): string;
   /**
