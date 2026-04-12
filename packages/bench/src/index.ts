@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { styra } from "styra";
+import { cn, styra } from "@ntatoud/styra";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
@@ -103,4 +103,50 @@ compare(
   "3. compound variants",
   () => cvaCompound({ size: "sm", color: "red" }),
   () => styraCompound({ size: "sm", color: "red" }),
+);
+
+// ─── clsx-like syntax scenarios ───────────────────────────────────────────────
+
+const cvaWithClass = cva({ base: "btn", variants: { size: { sm: "text-sm", md: "text-md" } } });
+
+// Scenario 4: string class override (baseline — already existed, now explicit comparison)
+compare(
+  "4. class: string",
+  () => cvaWithClass({ size: "sm", class: "mt-4" }),
+  () => styraVariants({ size: "sm", color: "red", disabled: "no", class: "mt-4" }),
+);
+
+// Scenario 5: class as array
+compare(
+  "5. class: array",
+  () => cvaWithClass({ size: "sm", class: "mt-4 px-2" }),
+  () => styraBase({ class: ["mt-4", "px-2"] }),
+);
+
+// Scenario 6: class as object (conditional classes)
+compare(
+  "6. class: object",
+  () => cvaWithClass({ size: "sm", class: "mt-4" }),
+  () => styraBase({ class: { "mt-4": true, "px-2": false, "font-bold": true } }),
+);
+
+// Scenario 7: class as nested array + object mix
+compare(
+  "7. class: nested array+object",
+  () => cvaWithClass({ size: "sm", class: "mt-4 px-2 font-bold" }),
+  () => styraBase({ class: ["mt-4", ["px-2", { "font-bold": true, italic: false }]] }),
+);
+
+// Scenario 8: cn utility — strings
+compare(
+  "8. cn: strings",
+  () => ["btn", "mt-4", "px-2"].join(" "),
+  () => cn("btn", "mt-4", "px-2"),
+);
+
+// Scenario 9: cn utility — array + object
+compare(
+  "9. cn: array+obj",
+  () => ["btn", "mt-4", "font-bold"].join(" "),
+  () => cn(["btn", "mt-4", { "font-bold": true, italic: false }]),
 );

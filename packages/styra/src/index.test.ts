@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { createStyra, styra } from "./index.js";
+import { cn, createStyra, styra } from "./index.js";
 
 describe("styra — base class", () => {
   it("returns the base class when called with no variants", () => {
@@ -125,6 +125,69 @@ describe("styra — error on double .variants()", () => {
     expect(() => builder.variants({ color: { red: "bg-red" } })).toThrow(
       "styra: .variants() can only be called once per builder",
     );
+  });
+});
+
+describe("styra — clsx-like class syntax", () => {
+  const btn = styra("btn");
+
+  it("accepts an array for class", () => {
+    expect(btn({ class: ["mt-4", "px-2"] })).toBe("btn mt-4 px-2");
+  });
+
+  it("accepts an object for class (conditional classes)", () => {
+    expect(btn({ class: { "mt-4": true, "px-2": false } })).toBe("btn mt-4");
+  });
+
+  it("accepts nested arrays for class", () => {
+    expect(btn({ class: ["mt-4", ["px-2", "text-sm"]] })).toBe("btn mt-4 px-2 text-sm");
+  });
+
+  it("ignores falsy values in arrays", () => {
+    expect(btn({ class: ["mt-4", false, null, undefined, "px-2"] })).toBe("btn mt-4 px-2");
+  });
+
+  it("accepts an array for className", () => {
+    expect(btn({ className: ["mt-4", "px-2"] })).toBe("btn mt-4 px-2");
+  });
+
+  it("accepts an object for className (conditional classes)", () => {
+    expect(btn({ className: { "mt-4": true, "px-2": false } })).toBe("btn mt-4");
+  });
+
+  it("accepts mixed clsx args in class and className", () => {
+    expect(btn({ class: ["mt-4", { "px-2": true }], className: "text-sm" })).toBe(
+      "btn mt-4 px-2 text-sm",
+    );
+  });
+});
+
+describe("cn — default instance", () => {
+  it("joins strings", () => {
+    expect(cn("foo", "bar")).toBe("foo bar");
+  });
+
+  it("handles arrays and objects", () => {
+    expect(cn(["foo", { bar: true, baz: false }])).toBe("foo bar");
+  });
+
+  it("ignores falsy values", () => {
+    expect(cn("foo", false, null, undefined, "bar")).toBe("foo bar");
+  });
+});
+
+describe("cn — with custom merge", () => {
+  it("passes resolved string through merge function", () => {
+    const calls: string[] = [];
+    const { cn: customCn } = createStyra({
+      merge: (...c) => {
+        calls.push(...c);
+        return c.join("|");
+      },
+    });
+    const result = customCn("foo", ["bar", { baz: true }]);
+    expect(result).toBe("foo bar baz");
+    expect(calls).toEqual(["foo bar baz"]);
   });
 });
 
