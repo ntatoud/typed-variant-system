@@ -78,6 +78,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+function LoadingButtonDemo() {
+  const [loading, setLoading] = useState(false);
+
+  function handleClick() {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 2000);
+  }
+
+  return (
+    <Button loading={loading} onClick={handleClick}>
+      {loading ? "Saving…" : "Save changes"}
+    </Button>
+  );
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-4">
@@ -134,7 +149,7 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
             <Button size="sm">Small</Button>
             <Button size="lg">Large</Button>
             <Button disabled>Disabled</Button>
-            <Button fullWidth>Full width</Button>
+            <LoadingButtonDemo />
           </Section>
 
           {/* Badge */}
