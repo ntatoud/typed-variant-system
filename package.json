@@ -2,6 +2,7 @@
   "name": "styra-monorepo",
   "version": "0.0.0",
   "private": true,
+  "author": "Noe TATOUD <noe.tatoud@gmail.com>",
   "type": "module",
   "scripts": {
     "ready": "vp fmt && vp lint && vp run -r test && vp run -r build",
