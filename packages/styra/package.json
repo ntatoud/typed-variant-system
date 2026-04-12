@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:",
     "@types/node": "^25.5.0",
     "typescript": "^6.0.2",
     "vite-plus": "catalog:",

@@ -5,5 +5,8 @@ export default defineConfig({
     tsgo: true,
   },
   exports: true,
-  // ...config options
+  attw: {
+    enabled: true,
+    profile: "esm-only",
+  },
 });
