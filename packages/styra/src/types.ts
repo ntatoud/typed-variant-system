@@ -1,5 +1,18 @@
 export type MergeFn = (...classes: string[]) => string;
 
+/** Merge two variant value types: union of parent and override keys, all string values. */
+type MergeVariantValues<P, O> =
+  P extends Record<string, string>
+    ? O extends Record<string, string>
+      ? { [K in keyof P | keyof O]: string }
+      : P
+    : O;
+
+/** Resulting variant map when extending V with OV: parent keys merged, new keys added. */
+export type MergedVariantMap<V extends VariantMap, OV extends VariantMap> = Omit<V, keyof OV> & {
+  [K in keyof OV]: K extends keyof V ? MergeVariantValues<V[K], OV[K]> : OV[K];
+};
+
 /**
  * A map of variant keys to their possible values and classes.
  * Values can be a `Record<string, string>` (explicit map) or a plain `string`
@@ -63,7 +76,10 @@ export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
    */
   extend<OV extends VariantMap>(
     overrides: OV,
-  ): StyraBuilder<Omit<V, keyof OV> & OV, Record<never, never>>;
+  ): StyraBuilder<
+    MergedVariantMap<V, OV>,
+    D extends DefaultsOf<MergedVariantMap<V, OV>> ? D : Record<never, never>
+  >;
 }
 
 /** Custom class merge function, e.g. `twMerge` from tailwind-merge. */

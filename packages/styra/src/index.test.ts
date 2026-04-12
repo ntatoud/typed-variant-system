@@ -126,40 +126,44 @@ describe("styra — .extend()", () => {
     })
     .defaults({ size: "md" });
 
-  const inputGroupButtonVariants = buttonVariants.extend({
-    size: { xs: "text-xs px-1", sm: "text-sm px-1.5" },
+  it("merges override classes on top of parent classes for the same key", () => {
+    // Only the delta is written; parent classes are preserved
+    const extended = buttonVariants.extend({
+      size: { sm: "shadow-none" },
+    });
+    expect(extended({ size: "sm", color: "red" })).toBe("btn text-sm px-2 shadow-none bg-red");
   });
 
-  it("inherits non-overridden variants", () => {
-    expect(inputGroupButtonVariants({ size: "xs", color: "red" })).toContain("bg-red");
-    expect(inputGroupButtonVariants({ size: "sm", color: "blue" })).toContain("bg-blue");
+  it("inherits unchanged variant values from the parent", () => {
+    const extended = buttonVariants.extend({ size: { sm: "shadow-none" } });
+    // md and lg are not overridden — parent classes unchanged
+    expect(extended({ size: "md", color: "red" })).toBe("btn text-md px-4 bg-red");
+    expect(extended({ size: "lg", color: "blue" })).toBe("btn text-lg px-6 bg-blue");
   });
 
-  it("uses overridden variant values", () => {
-    expect(inputGroupButtonVariants({ size: "xs", color: "red" })).toBe("btn text-xs px-1 bg-red");
-    expect(inputGroupButtonVariants({ size: "sm", color: "blue" })).toBe(
-      "btn text-sm px-1.5 bg-blue",
+  it("adds new variant values not present in the parent", () => {
+    const extended = buttonVariants.extend({
+      size: { xs: "text-xs px-1" },
+    });
+    expect(extended({ size: "xs", color: "red" })).toBe("btn text-xs px-1 bg-red");
+  });
+
+  it("adds new variant keys not present in the parent", () => {
+    const extended = buttonVariants.extend({ shape: { round: "rounded-full" } });
+    expect(extended({ size: "sm", color: "red", shape: "round" })).toBe(
+      "btn text-sm px-2 bg-red rounded-full",
     );
   });
 
-  it("drops defaults for overridden variants — callers chain .defaults() to restore them", () => {
-    // size was overridden so its default is dropped; callers must set new defaults explicitly
-    const withDefaults = inputGroupButtonVariants.defaults({ size: "xs" });
-    expect(withDefaults({ color: "red" })).toBe("btn text-xs px-1 bg-red");
-  });
-
-  it("applies classes for all provided variants from parent and override", () => {
-    const extended = buttonVariants.extend({
-      color: { green: "bg-green" },
-    });
-    expect(extended({ size: "sm", color: "green" })).toBe("btn text-sm px-2 bg-green");
-    expect(extended({ size: "lg", color: "green" })).toBe("btn text-lg px-6 bg-green");
+  it("preserves parent defaults", () => {
+    const extended = buttonVariants.extend({ size: { sm: "shadow-none" } });
+    // size defaults to "md" from parent
+    expect(extended({ color: "red" })).toBe("btn text-md px-4 bg-red");
   });
 
   it("does not affect the original builder", () => {
+    buttonVariants.extend({ size: { sm: "shadow-none" } });
     expect(buttonVariants({ size: "sm", color: "red" })).toBe("btn text-sm px-2 bg-red");
-    // "xs" doesn't exist on original — would be a TS error, but at runtime returns no class
-    expect(buttonVariants({ size: "xs" as "sm", color: "red" })).toBe("btn bg-red");
   });
 
   it("inherits compound rules", () => {
@@ -173,6 +177,13 @@ describe("styra — .extend()", () => {
     expect(ext({ size: "sm", color: "red", shape: "round" })).toBe(
       "btn text-sm bg-red rounded-full ring-red",
     );
+  });
+
+  it("uses customMerge when merging classes for the same value", () => {
+    const { styra: mergedStyra } = createStyra({ merge: (...c) => c.join("|") });
+    const base = mergedStyra("btn").variants({ size: { sm: "text-sm px-2" } });
+    const extended = base.extend({ size: { sm: "shadow-none" } });
+    expect(extended({ size: "sm" })).toBe("btn|text-sm px-2|shadow-none");
   });
 });
 

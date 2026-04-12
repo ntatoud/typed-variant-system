@@ -61,10 +61,10 @@ function InputGroupAddon({
 const inputGroupButtonVariants = buttonVariants
   .extend({
     size: {
-      xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 shadow-none [&>svg:not([class*='size-'])]:size-3.5",
+      xs: "rounded-[calc(var(--radius)-3px)] px-1.5 shadow-none",
       sm: "shadow-none",
-      "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 shadow-none has-[>svg]:p-0",
-      "icon-sm": "size-8 p-0 shadow-none has-[>svg]:p-0",
+      "icon-xs": "rounded-[calc(var(--radius)-3px)] p-0 shadow-none has-[>svg]:p-0",
+      "icon-sm": "p-0 shadow-none has-[>svg]:p-0",
     },
   })
   .defaults({
@@ -86,7 +86,13 @@ function InputGroupButton({
       type={type}
       data-slot="button"
       data-size={size}
-      className={inputGroupButtonVariants({ variant, size, loading, className })}
+      className={inputGroupButtonVariants({
+        variant,
+        size,
+        loading,
+        // TODO: styra#12 - styra doesn't support function form of className yet
+        className: className as string | undefined,
+      })}
       {...props}
     />
   );

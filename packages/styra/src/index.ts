@@ -153,16 +153,43 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
   };
 
   call.extend = function <OV extends VariantMap>(overrides: OV) {
-    const mergedVariants = { ...variantMap, ...overrides } as VariantMap;
-    // Drop defaults for overridden keys so they don't carry stale values
-    const mergedDefaults: Record<string, unknown> = {};
-    for (const key in defaultMap as Record<string, unknown>) {
-      if (!(key in overrides)) mergedDefaults[key] = (defaultMap as Record<string, unknown>)[key];
+    // For each overridden variant key, merge class values on top of the parent's —
+    // rather than replacing them — so the caller only writes the delta.
+    const mergedVariants: VariantMap = { ...variantMap };
+    for (const key in overrides) {
+      const parentVariant = variantMap[key];
+      const overrideVariant = overrides[key]!;
+      if (parentVariant === undefined) {
+        mergedVariants[key] = overrideVariant;
+      } else {
+        const parentMap: Record<string, string> =
+          typeof parentVariant === "string"
+            ? { true: parentVariant, false: "" }
+            : (parentVariant as Record<string, string>);
+        const overrideMap: Record<string, string> =
+          typeof overrideVariant === "string"
+            ? { true: overrideVariant, false: "" }
+            : (overrideVariant as Record<string, string>);
+        const mergedMap: Record<string, string> = { ...parentMap };
+        for (const value in overrideMap) {
+          const parentClass = parentMap[value] ?? "";
+          const overrideClass = overrideMap[value]!;
+          if (customMerge && parentClass && overrideClass) {
+            mergedMap[value] = customMerge(parentClass, overrideClass);
+          } else {
+            mergedMap[value] =
+              parentClass && overrideClass
+                ? parentClass + " " + overrideClass
+                : parentClass || overrideClass;
+          }
+        }
+        mergedVariants[key] = mergedMap;
+      }
     }
     return makeBuilder(
       base,
       mergedVariants,
-      mergedDefaults as DefaultsOf<VariantMap>,
+      defaultMap as unknown as DefaultsOf<VariantMap>,
       compoundRules as Array<CompoundRule<VariantMap>>,
       customMerge,
       true,
