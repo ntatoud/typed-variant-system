@@ -2,7 +2,22 @@
   "name": "styra",
   "version": "0.1.0",
   "description": "Type-safe class variance builder — a maintained, boosted CVA replacement.",
+  "keywords": [
+    "class-variance-authority",
+    "cva",
+    "tailwind",
+    "typescript",
+    "variants"
+  ],
+  "homepage": "https://github.com/ntatoud/styra#readme",
+  "bugs": {
+    "url": "https://github.com/ntatoud/styra/issues"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntatoud/styra.git"
+  },
   "files": [
     "dist"
   ],
