@@ -40,6 +40,7 @@ import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
@@ -64,6 +65,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { SearchIcon, SendIcon, XIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -220,6 +222,7 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
 
           {/* InputGroup */}
           <Section title="Input Group">
+            {/* Text addons */}
             <InputGroup className="w-64">
               <InputGroupAddon>
                 <InputGroupText>https://</InputGroupText>
@@ -230,6 +233,67 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
               <InputGroupInput placeholder="Search…" />
               <InputGroupAddon align="inline-end">
                 <InputGroupText>⌘K</InputGroupText>
+              </InputGroupAddon>
+            </InputGroup>
+
+            {/* Button addon — default (xs) size */}
+            <InputGroup className="w-64">
+              <InputGroupInput placeholder="Search…" />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton>
+                  <SearchIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+
+            {/* Button addon — clear button */}
+            <InputGroup className="w-64">
+              <InputGroupAddon>
+                <InputGroupText>To</InputGroupText>
+              </InputGroupAddon>
+              <InputGroupInput placeholder="recipient@example.com" />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton aria-label="Clear">
+                  <XIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+
+            {/* Button addon — send with variant */}
+            <InputGroup className="w-64">
+              <InputGroupInput placeholder="Write a message…" />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton variant="default">
+                  <SendIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+
+            {/* Button addon — sm size */}
+            <InputGroup className="w-64">
+              <InputGroupInput placeholder="Search…" />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton size="sm">Search</InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+
+            {/* Icon button sizes */}
+            <InputGroup className="w-64">
+              <InputGroupAddon>
+                <InputGroupButton size="icon-xs" aria-label="Search">
+                  <SearchIcon />
+                </InputGroupButton>
+              </InputGroupAddon>
+              <InputGroupInput placeholder="icon-xs button" />
+            </InputGroup>
+
+            {/* Disabled state */}
+            <InputGroup className="w-64">
+              <InputGroupInput placeholder="Disabled…" disabled />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton disabled>
+                  <SendIcon />
+                </InputGroupButton>
               </InputGroupAddon>
             </InputGroup>
           </Section>
