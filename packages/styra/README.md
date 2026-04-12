@@ -1,23 +1,57 @@
-# tsdown-starter
+# styra
 
-A starter for creating a TypeScript package.
+Type-safe class variance builder — a maintained, boosted CVA replacement.
+
+## Usage
+
+```ts
+import { styra } from "styra";
+
+const button = styra("btn")
+  .variants({
+    size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+    color: { red: "bg-red", blue: "bg-blue" },
+  })
+  .defaults({ size: "md" })
+  .compound([{ size: "sm", color: "red", class: "ring-red" }]);
+
+button({ color: "red" }); // 'btn text-md bg-red'
+button({ size: "sm", color: "red" }); // 'btn text-sm bg-red ring-red'
+```
+
+### With a custom merge function (e.g. `tailwind-merge`)
+
+```ts
+import { createStyra } from "styra";
+import { twMerge } from "tailwind-merge";
+
+export const { styra } = createStyra({ merge: twMerge });
+```
+
+### Negation in compound rules
+
+```ts
+const btn = styra("btn")
+  .variants({ size: { sm: "text-sm", lg: "text-lg" }, disabled: { yes: "opacity-50", no: "" } })
+  .compound([{ disabled: { not: "yes" }, class: "hover:opacity-80" }]);
+```
 
 ## Development
 
 - Install dependencies:
 
 ```bash
-npm install
+vp install
 ```
 
 - Run the unit tests:
 
 ```bash
-npm run test
+vp test
 ```
 
 - Build the library:
 
 ```bash
-npm run build
+vp pack
 ```
