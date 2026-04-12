@@ -1,5 +1,5 @@
 {
-  "name": "styra",
+  "name": "@ntatoud/styra",
   "version": "0.1.0",
   "description": "Type-safe class variance builder — a maintained, boosted CVA replacement.",
   "keywords": [
