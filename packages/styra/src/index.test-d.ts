@@ -19,6 +19,16 @@ describe("VariantProps", () => {
     expectTypeOf<ToggledProps>().toMatchTypeOf<{ disabled: boolean; size: "sm" }>();
   });
 
+  // className accepts function form (e.g. Base UI render-prop pattern)
+  it("accepts function form of className", () => {
+    btn({
+      color: "red",
+      className: (state: { disabled: boolean }) => (state.disabled ? "opacity-50" : undefined),
+    });
+    btn({ color: "red", className: undefined });
+    btn({ color: "red", className: "text-sm" });
+  });
+
   // Compatible with React component prop intersections
   type ButtonProps = Props & { children?: string };
   expectTypeOf<ButtonProps>().toMatchTypeOf<{
