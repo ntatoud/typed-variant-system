@@ -2,6 +2,12 @@
 
 All notable changes to `@ntatoud/styra` will be documented in this file.
 
+## [0.2.0] - 2026-04-12
+
+### Added
+
+- Intent skills for AI agent support ([#17](https://github.com/ntatoud/styra/pull/17))
+
 ## [0.1.0] - 2026-04-12
 
 ### Added
