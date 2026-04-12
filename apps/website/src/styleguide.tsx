@@ -236,11 +236,11 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
               </InputGroupAddon>
             </InputGroup>
 
-            {/* Button addon — default (xs) size */}
+            {/* Button addon — icon-xs size */}
             <InputGroup className="w-64">
               <InputGroupInput placeholder="Search…" />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton>
+                <InputGroupButton size="icon-xs" aria-label="Search">
                   <SearchIcon />
                 </InputGroupButton>
               </InputGroupAddon>
@@ -253,7 +253,7 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
               </InputGroupAddon>
               <InputGroupInput placeholder="recipient@example.com" />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton aria-label="Clear">
+                <InputGroupButton size="icon-xs" aria-label="Clear">
                   <XIcon />
                 </InputGroupButton>
               </InputGroupAddon>
@@ -263,7 +263,7 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
             <InputGroup className="w-64">
               <InputGroupInput placeholder="Write a message…" />
               <InputGroupAddon align="inline-end">
-                <InputGroupButton variant="default">
+                <InputGroupButton variant="default" size="icon-xs">
                   <SendIcon />
                 </InputGroupButton>
               </InputGroupAddon>
@@ -275,16 +275,6 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
               <InputGroupAddon align="inline-end">
                 <InputGroupButton size="sm">Search</InputGroupButton>
               </InputGroupAddon>
-            </InputGroup>
-
-            {/* Icon button sizes */}
-            <InputGroup className="w-64">
-              <InputGroupAddon>
-                <InputGroupButton size="icon-xs" aria-label="Search">
-                  <SearchIcon />
-                </InputGroupButton>
-              </InputGroupAddon>
-              <InputGroupInput placeholder="icon-xs button" />
             </InputGroup>
 
             {/* Disabled state */}
