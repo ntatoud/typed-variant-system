@@ -1,0 +1,90 @@
+library:
+  name: "@ntatoud/styra"
+  description: >
+    Type-safe class variance builder — a maintained, dependency-free CVA
+    replacement. Produces component class strings from variant maps with full
+    TypeScript inference. Works with any CSS class system (Tailwind, CSS
+    Modules, raw class strings).
+  repository: https://github.com/ntatoud/styra
+  version: "0.1.0"
+  monorepo: true
+  client_packages:
+    - packages/styra
+  internal_packages:
+    - packages/bench
+
+domains:
+  - id: building-variants
+    label: Building component variants
+    description: >
+      Defining the variant map, applying defaults, and calling the builder
+      to resolve class strings. Covers the core builder chain
+      (styra -> .variants() -> .defaults()), boolean shorthand, and the
+      clsx-like class/className override props.
+    concepts:
+      - "styra(base) — creates a builder with a base class string"
+      - ".variants(map) — attaches variant key -> value -> class mappings; can only be called once"
+      - ".defaults(map) — makes variants optional at call-site"
+      - "boolean shorthand — pass a plain string instead of a map to get a boolean prop"
+      - "class / className override props — accept string, array, object, or function"
+      - "toKey coercion — booleans are coerced to 'true'/'false' for map lookup"
+      - "VariantProps<T> — strips class/className from inferred props for component typing"
+      - "InferProps<V, D> — required vs optional distinction driven by defaults"
+    failure_modes:
+      - "Calling .variants() twice on the same builder throws at runtime"
+      - "Omitting a required variant (one without a default) produces a TypeScript error but silently resolves to undefined class at runtime"
+      - "Passing a boolean to a non-boolean variant key is not caught by the type system if the variant values happen to include 'true'/'false'"
+      - "Agents trained on CVA may emit cva() config object syntax — styra uses a builder chain, not a config object"
+
+  - id: compound-variants
+    label: Writing compound variant rules
+    description: >
+      Applying additional classes when multiple variant conditions are
+      simultaneously satisfied. Includes exact-match rules and negation
+      with the not syntax — styra's primary differentiator from CVA.
+    concepts:
+      - ".compound(rules) — attaches an array of compound rules"
+      - "CompoundRule<V> — conditions keyed by variant name plus a class string"
+      - "Not<T> — negation condition: { not: value } fires when variant is NOT that value"
+      - "matchesCompound — iterates all non-class keys; all must match for the rule to fire"
+      - "Rule evaluation order — rules fire in array order; all matching rules apply"
+    failure_modes:
+      - "Omitting the class key in a compound rule silently does nothing (TypeScript catches it)"
+      - "Using not against a boolean shorthand variant: the string key is 'true'/'false', not the boolean — { disabled: { not: true } } is wrong, use { disabled: { not: 'true' } } instead"
+      - "Agents often over-engineer with many compound rules when a single boolean variant or default covers the case"
+      - "CVA users may write compoundVariants array key — styra uses .compound([])"
+
+  - id: integration
+    label: Integrating with merge utilities and component libraries
+    description: >
+      Wiring styra to a class merge function (e.g. tailwind-merge) and
+      replacing CVA in shadcn/ui or similar component libraries. Covers
+      createStyra factory and the cn utility.
+    concepts:
+      - "createStyra({ merge }) — factory that returns a configured styra + cn pair"
+      - "cn(...args) — clsx-compatible utility, passes through merge fn if configured"
+      - "MergeFn — (...classes: string[]) => string interface"
+      - "Multiple independent instances — each createStyra call is isolated"
+      - "shadcn/ui pattern — replace cva import with createStyra-derived styra"
+    failure_modes:
+      - "Importing styra and twMerge and calling twMerge(styra()()) — instead, wire merge at factory level with createStyra"
+      - "Creating multiple createStyra instances in the same module when one shared instance is intended"
+      - "cn with a custom merge receives a single pre-joined string (not spread args) — intentional but differs from passing args directly to twMerge"
+
+  - id: migration
+    label: Migrating from CVA
+    description: >
+      Drop-in replacement patterns when moving a codebase from
+      class-variance-authority to @ntatoud/styra. API mapping and
+      behavioral differences.
+    concepts:
+      - "CVA config object vs styra builder chain"
+      - "cva(base, variants/defaultVariants/compoundVariants) -> styra(base).variants().defaults().compound()"
+      - "CVA VariantProps -> styra VariantProps (same shape, same usage)"
+      - "cx utility -> cn utility (same clsx-compatible API)"
+      - "No required peer dependency — CVA required no peer deps too; styra is also zero-dep"
+    failure_modes:
+      - "Agents generating cva() call syntax instead of builder chain"
+      - "defaultVariants key (CVA) vs .defaults() method (styra)"
+      - "compoundVariants array key (CVA) vs .compound() method (styra)"
+      - "CVA did not support boolean shorthand or negation — agents may not generate these even when appropriate"

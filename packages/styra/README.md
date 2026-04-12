@@ -36,6 +36,14 @@ const btn = styra("btn")
   .compound([{ disabled: { not: "yes" }, class: "hover:opacity-80" }]);
 ```
 
+## AI Agent Support
+
+If you use an AI agent (Claude Code, Cursor, Copilot, etc.), run the following to install styra's intent skills:
+
+```bash
+npx @tanstack/intent@latest install
+```
+
 ## Development
 
 - Install dependencies:
