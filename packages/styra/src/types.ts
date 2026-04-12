@@ -36,7 +36,7 @@ export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
   className?: string;
 };
 
-/** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`. */
+/** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`, `.extend()`. */
 export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   (
     props: keyof V extends never ? { class?: string; className?: string } : InferProps<V, D>,
@@ -50,6 +50,20 @@ export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   defaults<ND extends DefaultsOf<V>>(d: ND): StyraBuilder<V, ND>;
   /** Add compound variant rules applied when multiple variant conditions are met. */
   compound(rules: Array<CompoundRule<V>>): StyraBuilder<V, D>;
+  /**
+   * Create a new builder that inherits all variants, defaults, and compound rules from this
+   * builder, with the given overrides merged on top.
+   *
+   * @example
+   * ```ts
+   * const inputGroupButtonVariants = buttonVariants.extend({
+   *   size: { xs: "h-6 px-2 text-xs", sm: "h-7 px-2.5 text-sm" },
+   * });
+   * ```
+   */
+  extend<OV extends VariantMap>(
+    overrides: OV,
+  ): StyraBuilder<Omit<V, keyof OV> & OV, Record<never, never>>;
 }
 
 /** Custom class merge function, e.g. `twMerge` from tailwind-merge. */

@@ -118,6 +118,64 @@ describe("styra — error on double .variants()", () => {
   });
 });
 
+describe("styra — .extend()", () => {
+  const buttonVariants = styra("btn")
+    .variants({
+      size: { sm: "text-sm px-2", md: "text-md px-4", lg: "text-lg px-6" },
+      color: { red: "bg-red", blue: "bg-blue" },
+    })
+    .defaults({ size: "md" });
+
+  const inputGroupButtonVariants = buttonVariants.extend({
+    size: { xs: "text-xs px-1", sm: "text-sm px-1.5" },
+  });
+
+  it("inherits non-overridden variants", () => {
+    expect(inputGroupButtonVariants({ size: "xs", color: "red" })).toContain("bg-red");
+    expect(inputGroupButtonVariants({ size: "sm", color: "blue" })).toContain("bg-blue");
+  });
+
+  it("uses overridden variant values", () => {
+    expect(inputGroupButtonVariants({ size: "xs", color: "red" })).toBe("btn text-xs px-1 bg-red");
+    expect(inputGroupButtonVariants({ size: "sm", color: "blue" })).toBe(
+      "btn text-sm px-1.5 bg-blue",
+    );
+  });
+
+  it("drops defaults for overridden variants — callers chain .defaults() to restore them", () => {
+    // size was overridden so its default is dropped; callers must set new defaults explicitly
+    const withDefaults = inputGroupButtonVariants.defaults({ size: "xs" });
+    expect(withDefaults({ color: "red" })).toBe("btn text-xs px-1 bg-red");
+  });
+
+  it("applies classes for all provided variants from parent and override", () => {
+    const extended = buttonVariants.extend({
+      color: { green: "bg-green" },
+    });
+    expect(extended({ size: "sm", color: "green" })).toBe("btn text-sm px-2 bg-green");
+    expect(extended({ size: "lg", color: "green" })).toBe("btn text-lg px-6 bg-green");
+  });
+
+  it("does not affect the original builder", () => {
+    expect(buttonVariants({ size: "sm", color: "red" })).toBe("btn text-sm px-2 bg-red");
+    // "xs" doesn't exist on original — would be a TS error, but at runtime returns no class
+    expect(buttonVariants({ size: "xs" as "sm", color: "red" })).toBe("btn bg-red");
+  });
+
+  it("inherits compound rules", () => {
+    const base = styra("btn")
+      .variants({
+        size: { sm: "text-sm", md: "text-md" },
+        color: { red: "bg-red", blue: "bg-blue" },
+      })
+      .compound([{ size: "sm", color: "red", class: "ring-red" }]);
+    const ext = base.extend({ shape: { round: "rounded-full" } });
+    expect(ext({ size: "sm", color: "red", shape: "round" })).toBe(
+      "btn text-sm bg-red rounded-full ring-red",
+    );
+  });
+});
+
 describe("createStyra — custom merge", () => {
   it("uses the provided merge function", () => {
     const calls: string[][] = [];

@@ -152,6 +152,23 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
     return makeBuilder(base, variantMap, defaultMap, rules, customMerge, variantsLocked);
   };
 
+  call.extend = function <OV extends VariantMap>(overrides: OV) {
+    const mergedVariants = { ...variantMap, ...overrides } as VariantMap;
+    // Drop defaults for overridden keys so they don't carry stale values
+    const mergedDefaults: Record<string, unknown> = {};
+    for (const key in defaultMap as Record<string, unknown>) {
+      if (!(key in overrides)) mergedDefaults[key] = (defaultMap as Record<string, unknown>)[key];
+    }
+    return makeBuilder(
+      base,
+      mergedVariants,
+      mergedDefaults as DefaultsOf<VariantMap>,
+      compoundRules as Array<CompoundRule<VariantMap>>,
+      customMerge,
+      true,
+    );
+  };
+
   return call as unknown as StyraBuilder<V, D>;
 }
 
