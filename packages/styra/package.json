@@ -6,6 +6,7 @@
     "class-variance-authority",
     "cva",
     "tailwind",
+    "tanstack-intent",
     "typescript",
     "variants"
   ],
@@ -19,7 +20,8 @@
     "url": "git+https://github.com/ntatoud/styra.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "type": "module",
   "exports": {
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/core": "catalog:",
+    "@tanstack/intent": "catalog:",
     "@types/node": "^25.5.0",
     "typescript": "^6.0.2",
     "vite-plus": "catalog:",
