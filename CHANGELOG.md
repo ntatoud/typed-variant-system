@@ -2,6 +2,17 @@
 
 All notable changes to `tvs` will be documented in this file.
 
+## [0.3.0] - 2026-04-13
+
+### Changed
+
+- Rename package from `styra` to `tvs`
+- Remove `@ntatoud` scope prefix from package name
+
+### Removed
+
+- Intent skills to reduce package size
+
 ## [0.2.0] - 2026-04-12
 
 ### Added
