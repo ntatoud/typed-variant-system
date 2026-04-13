@@ -61,6 +61,19 @@ const btn = tvs("btn")
   .compound([{ disabled: { not: "yes" }, class: "hover:opacity-80" }]);
 ```
 
+Compound conditions also accept arrays for OR matching and `{ not: [...] }` for none-of matching:
+
+```ts
+const btn = tvs("btn")
+  .variants({ size: { sm: "text-sm", md: "text-md", lg: "text-lg" } })
+  .compound([
+    // applies when size is "sm" or "md"
+    { size: ["sm", "md"], class: "compact" },
+    // applies when size is neither "sm" nor "md"
+    { size: { not: ["sm", "md"] }, class: "spacious" },
+  ]);
+```
+
 ### Merging class names
 
 Use the `cn` utility for `clsx`-like class merging:

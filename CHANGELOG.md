@@ -4,6 +4,10 @@ All notable changes to `tvs` will be documented in this file.
 
 ## [0.3.0] - 2026-04-13
 
+### Added
+
+- Array syntax for compound variant conditions — match multiple values with `["sm", "md"]` or exclude multiple values with `{ not: ["sm", "md"] }` ([#20](https://github.com/ntatoud/tvs/pull/20))
+
 ### Changed
 
 - Rename package from `styra` to `tvs`
