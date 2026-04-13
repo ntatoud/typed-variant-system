@@ -1,7 +1,7 @@
 {
   "name": "tvs",
-  "version": "0.2.0",
-  "description": "Type-safe class variance builder — a maintained, boosted CVA replacement.",
+  "version": "0.3.0",
+  "description": "Type-safe class variance builder. A maintained, feature-rich CVA replacement.",
   "keywords": [
     "class-variance-authority",
     "cva",
