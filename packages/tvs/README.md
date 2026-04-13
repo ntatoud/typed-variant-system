@@ -22,10 +22,10 @@ button({ size: "sm", color: "red" }); // 'btn text-sm bg-red ring-red'
 ### With a custom merge function (e.g. `tailwind-merge`)
 
 ```ts
-import { createStyra } from "tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
-export const { tvs } = createStyra({ merge: twMerge });
+export const { tvs } = createTvs({ merge: twMerge });
 ```
 
 ### Negation in compound rules
@@ -34,14 +34,6 @@ export const { tvs } = createStyra({ merge: twMerge });
 const btn = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" }, disabled: { yes: "opacity-50", no: "" } })
   .compound([{ disabled: { not: "yes" }, class: "hover:opacity-80" }]);
-```
-
-## AI Agent Support
-
-If you use an AI agent (Claude Code, Cursor, Copilot, etc.), run the following to install tvs's intent skills:
-
-```bash
-npx @tanstack/intent@latest install
 ```
 
 ## Development

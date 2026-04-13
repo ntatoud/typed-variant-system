@@ -6,7 +6,6 @@
     "class-variance-authority",
     "cva",
     "tailwind",
-    "tanstack-intent",
     "typescript",
     "variants"
   ],
@@ -20,8 +19,7 @@
     "url": "git+https://github.com/ntatoud/tvs.git"
   },
   "files": [
-    "dist",
-    "skills"
+    "dist"
   ],
   "type": "module",
   "exports": {
@@ -36,7 +34,6 @@
   },
   "devDependencies": {
     "@arethetypeswrong/core": "catalog:",
-    "@tanstack/intent": "catalog:",
     "@types/node": "^25.5.0",
     "typescript": "^6.0.2",
     "vite-plus": "catalog:",
