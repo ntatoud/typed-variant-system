@@ -7,13 +7,13 @@ Build component variants with a fluent API, full TypeScript inference, optional 
 ## Installation
 
 ```bash
-npm install tvs
+npm install typed-variant-system
 ```
 
 ## Usage
 
 ```ts
-import { tvs } from "tvs";
+import { tvs } from "typed-variant-system";
 
 const button = tvs("btn")
   .variants({
@@ -34,7 +34,7 @@ button({ size: "sm", color: "red" }); // 'btn text-sm bg-red ring-red'
 Pass any merge function (e.g. `tailwind-merge`) to resolve class conflicts:
 
 ```ts
-import { createTvs } from "tvs";
+import { createTvs } from "typed-variant-system";
 import { twMerge } from "tailwind-merge";
 
 export const { tvs } = createTvs({ merge: twMerge });
@@ -79,7 +79,7 @@ const btn = tvs("btn")
 Use the `cn` utility for `clsx`-like class merging:
 
 ```ts
-import { cn } from "tvs";
+import { cn } from "typed-variant-system";
 
 cn("px-4", condition && "py-2", ["rounded", "text-sm"]); // 'px-4 py-2 rounded text-sm'
 ```
@@ -89,7 +89,7 @@ cn("px-4", condition && "py-2", ["rounded", "text-sm"]); // 'px-4 py-2 rounded t
 Extract variant prop types for use in component definitions:
 
 ```ts
-import type { VariantProps } from "tvs";
+import type { VariantProps } from "typed-variant-system";
 
 type ButtonProps = VariantProps<typeof button>;
 ```

@@ -93,12 +93,12 @@ importers:
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.5.0
-      tvs:
-        specifier: workspace:*
-        version: link:../../packages/tvs
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
+      typed-variant-system:
+        specifier: workspace:*
+        version: link:../../packages/tvs
     devDependencies:
       '@tailwindcss/vite':
         specifier: 'catalog:'
@@ -130,7 +130,7 @@ importers:
       cva:
         specifier: 1.0.0-beta.4
         version: 1.0.0-beta.4(typescript@6.0.2)
-      tvs:
+      typed-variant-system:
         specifier: workspace:*
         version: link:../tvs
     devDependencies:
