@@ -18,9 +18,23 @@ function matchesCompound<V extends VariantMap>(
     const rawCondition = (rule as Record<string, unknown>)[key];
     const value = resolved[key];
     if (rawCondition !== null && typeof rawCondition === "object" && "not" in rawCondition) {
-      const notVal =
-        toKey((rawCondition as Not<unknown>).not) ?? (rawCondition as Not<unknown>).not;
-      if (value === notVal) return false;
+      const notVal = (rawCondition as Not<unknown>).not;
+      if (Array.isArray(notVal)) {
+        for (let j = 0; j < notVal.length; j++) {
+          if (value === (toKey(notVal[j]) ?? notVal[j])) return false;
+        }
+      } else {
+        if (value === (toKey(notVal) ?? notVal)) return false;
+      }
+    } else if (Array.isArray(rawCondition)) {
+      let matched = false;
+      for (let j = 0; j < rawCondition.length; j++) {
+        if (value === (toKey(rawCondition[j]) ?? rawCondition[j])) {
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) return false;
     } else {
       const condition = toKey(rawCondition) ?? rawCondition;
       if (value !== condition) return false;

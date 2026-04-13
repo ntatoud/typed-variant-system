@@ -25,11 +25,11 @@ type PropTypeOf<V> = V extends string ? boolean : keyof V;
 export type DefaultsOf<V extends VariantMap> = Partial<{ [K in keyof V]: PropTypeOf<V[K]> }>;
 
 /** A single negation condition. */
-export type Not<T> = { not: T };
+export type Not<T> = { not: T | T[] };
 
-/** Per-key condition in a compound rule: exact value or negation. */
+/** Per-key condition in a compound rule: exact value, array of values (OR), negation, or negated array. */
 export type CompoundCondition<V extends VariantMap> = {
-  [K in keyof V]?: PropTypeOf<V[K]> | Not<PropTypeOf<V[K]>>;
+  [K in keyof V]?: PropTypeOf<V[K]> | PropTypeOf<V[K]>[] | Not<PropTypeOf<V[K]>>;
 };
 
 /** A compound variant rule: conditions + the class to apply when they match. */

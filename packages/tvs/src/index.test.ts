@@ -94,6 +94,42 @@ describe("tvs — compound variants with negation", () => {
   });
 });
 
+describe("tvs — compound variants with array syntax", () => {
+  const btn = tvs("btn")
+    .variants({
+      size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+      color: { red: "bg-red", blue: "bg-blue" },
+    })
+    .compound([{ size: ["sm", "md"], color: "red", class: "ring-red" }]);
+
+  it("applies compound class when value is in the array", () => {
+    expect(btn({ size: "sm", color: "red" })).toBe("btn text-sm bg-red ring-red");
+    expect(btn({ size: "md", color: "red" })).toBe("btn text-md bg-red ring-red");
+  });
+
+  it("does not apply compound class when value is not in the array", () => {
+    expect(btn({ size: "lg", color: "red" })).toBe("btn text-lg bg-red");
+  });
+});
+
+describe("tvs — compound variants with negated array syntax", () => {
+  const btn = tvs("btn")
+    .variants({
+      size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+      color: { red: "bg-red", blue: "bg-blue" },
+    })
+    .compound([{ size: { not: ["sm", "md"] }, color: "red", class: "ring-red" }]);
+
+  it("applies compound class when value is not in the negated array", () => {
+    expect(btn({ size: "lg", color: "red" })).toBe("btn text-lg bg-red ring-red");
+  });
+
+  it("does not apply compound class when value is in the negated array", () => {
+    expect(btn({ size: "sm", color: "red" })).toBe("btn text-sm bg-red");
+    expect(btn({ size: "md", color: "red" })).toBe("btn text-md bg-red");
+  });
+});
+
 describe("tvs — boolean variant shorthand", () => {
   const btn = tvs("btn").variants({
     disabled: "opacity-50 pointer-events-none",
