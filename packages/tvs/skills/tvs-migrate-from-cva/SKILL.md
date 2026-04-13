@@ -1,45 +1,45 @@
 ---
-name: styra-migrate-from-cva
+name: tvs-migrate-from-cva
 description: >
-  Migrate from CVA (class-variance-authority) to @ntatoud/styra. Maps cva() config object
-  syntax to styra builder chain: variants(), defaults(), compound(). Covers cx/clsx → cn,
+  Migrate from CVA (class-variance-authority) to @ntatoud/tvs. Maps cva() config object
+  syntax to tvs builder chain: variants(), defaults(), compound(). Covers cx/clsx → cn,
   VariantProps (unchanged), createStyra for merge config, boolean shorthand variants,
   and negation in compound rules. Use when converting class-variance-authority imports
-  or cva() calls to the styra builder API.
+  or cva() calls to the tvs builder API.
 type: lifecycle
-library: "@ntatoud/styra"
+library: "@ntatoud/tvs"
 library_version: "0.1.0"
 sources:
-  - "ntatoud/styra:packages/styra/src/index.ts"
-  - "ntatoud/styra:packages/styra/README.md"
+  - "ntatoud/tvs:packages/tvs/src/index.ts"
+  - "ntatoud/tvs:packages/tvs/README.md"
 ---
 
-# Migrate from CVA to styra
+# Migrate from CVA to tvs
 
-This skill covers replacing `class-variance-authority` with `@ntatoud/styra`. The core
-difference: CVA uses a single config object; styra uses a builder chain.
+This skill covers replacing `class-variance-authority` with `@ntatoud/tvs`. The core
+difference: CVA uses a single config object; tvs uses a builder chain.
 
 ## API Mapping
 
-| CVA                                                            | styra                                                |
-| -------------------------------------------------------------- | ---------------------------------------------------- |
-| `import { cva } from "class-variance-authority"`               | `import { styra } from "@ntatoud/styra"`             |
-| `import { cx } from "class-variance-authority"`                | `import { cn } from "@ntatoud/styra"`                |
-| `import { type VariantProps } from "class-variance-authority"` | `import { type VariantProps } from "@ntatoud/styra"` |
-| `cva(base, { variants })`                                      | `styra(base).variants({})`                           |
-| `cva(base, { defaultVariants })`                               | `.defaults({})`                                      |
-| `cva(base, { compoundVariants })`                              | `.compound([])`                                      |
-| CVA + clsx + twMerge (manual)                                  | `createStyra({ merge: twMerge })`                    |
+| CVA                                                            | tvs                                                |
+| -------------------------------------------------------------- | -------------------------------------------------- |
+| `import { cva } from "class-variance-authority"`               | `import { tvs } from "@ntatoud/tvs"`               |
+| `import { cx } from "class-variance-authority"`                | `import { cn } from "@ntatoud/tvs"`                |
+| `import { type VariantProps } from "class-variance-authority"` | `import { type VariantProps } from "@ntatoud/tvs"` |
+| `cva(base, { variants })`                                      | `tvs(base).variants({})`                           |
+| `cva(base, { defaultVariants })`                               | `.defaults({})`                                    |
+| `cva(base, { compoundVariants })`                              | `.compound([])`                                    |
+| CVA + clsx + twMerge (manual)                                  | `createTvs({ merge: twMerge })`                    |
 
 `VariantProps<typeof fn>` is identical — no change in usage.
 
 ## Setup
 
-Remove CVA, install styra:
+Remove CVA, install tvs:
 
 ```bash
 vp remove class-variance-authority
-vp add @ntatoud/styra
+vp add @ntatoud/tvs
 ```
 
 ## Patterns
@@ -66,9 +66,9 @@ type ButtonProps = VariantProps<typeof button>;
 After:
 
 ```ts
-import { styra, type VariantProps } from "@ntatoud/styra";
+import { tvs, type VariantProps } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue" },
@@ -94,7 +94,7 @@ const classes = cx("base", condition && "extra");
 After:
 
 ```ts
-import { cn } from "@ntatoud/styra";
+import { cn } from "@ntatoud/tvs";
 
 const classes = cn("base", condition && "extra");
 ```
@@ -102,7 +102,7 @@ const classes = cn("base", condition && "extra");
 ### Tailwind Merge integration
 
 CVA does not natively support a merge function — projects typically wired up clsx + twMerge
-manually alongside CVA. Styra integrates merge at creation time via `createStyra`.
+manually alongside CVA. Styra integrates merge at creation time via `createTvs`.
 
 Before (typical CVA + twMerge pattern):
 
@@ -123,35 +123,35 @@ const button = cva("btn rounded", {
 After:
 
 ```ts
-// lib/styra.ts
-import { createStyra } from "@ntatoud/styra";
+// lib/tvs.ts
+import { createTvs } from "@ntatoud/tvs";
 import { twMerge } from "tailwind-merge";
 
-export const { styra, cn } = createStyra({ merge: twMerge });
+export const { tvs, cn } = createTvs({ merge: twMerge });
 ```
 
 ```ts
 // button.ts
-import { styra, cn, type VariantProps } from "./lib/styra";
+import { tvs, cn, type VariantProps } from "./lib/tvs";
 
-const button = styra("btn rounded").variants({
+const button = tvs("btn rounded").variants({
   size: { sm: "px-2", lg: "px-6" },
 });
 
 type ButtonProps = VariantProps<typeof button>;
 ```
 
-Import `styra` and `cn` from your local `lib/styra` module everywhere instead of from
-`@ntatoud/styra` directly.
+Import `tvs` and `cn` from your local `lib/tvs` module everywhere instead of from
+`@ntatoud/tvs` directly.
 
 ### Variants with no default (required prop)
 
 If a variant has no entry in `.defaults()`, its prop is required in the inferred type.
 
 ```ts
-import { styra, type VariantProps } from "@ntatoud/styra";
+import { tvs, type VariantProps } from "@ntatoud/tvs";
 
-const badge = styra("badge")
+const badge = tvs("badge")
   .variants({
     status: { info: "bg-blue", warn: "bg-yellow", error: "bg-red" },
     size: { sm: "text-xs", md: "text-sm" },
@@ -163,15 +163,15 @@ type BadgeProps = VariantProps<typeof badge>;
 // → { status: "info" | "warn" | "error"; size?: "sm" | "md" }
 ```
 
-### Boolean shorthand variants (new in styra)
+### Boolean shorthand variants (new in tvs)
 
-CVA did not support boolean variants. In styra, a variant value that is a string (not an
+CVA did not support boolean variants. In tvs, a variant value that is a string (not an
 object) defines a boolean prop — the class applies when the prop is `true`.
 
 ```ts
-import { styra, type VariantProps } from "@ntatoud/styra";
+import { tvs, type VariantProps } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", lg: "text-lg" },
     disabled: "opacity-50 pointer-events-none", // boolean shorthand
@@ -189,15 +189,15 @@ button({ size: "lg", disabled: true });
 There is no CVA equivalent — this is new capability. Use it instead of manually adding
 conditional classes for simple on/off states.
 
-### Negation in compound rules (new in styra)
+### Negation in compound rules (new in tvs)
 
 CVA compound variants only matched when all listed keys matched. Styra allows negation via
 `{ not: value }` in compound entries.
 
 ```ts
-import { styra, type VariantProps } from "@ntatoud/styra";
+import { tvs, type VariantProps } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     disabled: "opacity-50 pointer-events-none",
     size: { sm: "text-sm", lg: "text-lg" },
@@ -217,26 +217,26 @@ by runtime logic, consider whether negation expresses the intent more cleanly.
 
 ### Using the CVA config object syntax
 
-Wrong — this is CVA syntax, not valid styra:
+Wrong — this is CVA syntax, not valid tvs:
 
 ```ts
 // WRONG
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn", {
+const button = tvs("btn", {
   variants: { size: { sm: "text-sm" } },
   defaultVariants: { size: "sm" },
   compoundVariants: [{ size: "sm", class: "ring" }],
 });
 ```
 
-Correct — styra uses a builder chain:
+Correct — tvs uses a builder chain:
 
 ```ts
 // CORRECT
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm" } })
   .defaults({ size: "sm" })
   .compound([{ size: "sm", class: "ring" }]);
@@ -247,8 +247,8 @@ const button = styra("btn")
 Wrong:
 
 ```ts
-// WRONG — compoundVariants is a CVA key, not a styra method
-const button = styra("btn")
+// WRONG — compoundVariants is a CVA key, not a tvs method
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm" } })
   .compoundVariants([{ size: "sm", class: "ring" }]);
 ```
@@ -260,8 +260,8 @@ Correct: the method is `.compound()`.
 Wrong:
 
 ```ts
-// WRONG — defaultVariants is a CVA key, not a styra method
-const button = styra("btn")
+// WRONG — defaultVariants is a CVA key, not a tvs method
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm", md: "text-md" } })
   .defaultVariants({ size: "md" });
 ```
@@ -270,26 +270,26 @@ Correct: the method is `.defaults()`.
 
 ### Not using createStyra when twMerge is needed
 
-Wrong — this bypasses styra's merge integration:
+Wrong — this bypasses tvs's merge integration:
 
 ```ts
-// WRONG — manually merging outside of styra
-import { styra } from "@ntatoud/styra";
+// WRONG — manually merging outside of tvs
+import { tvs } from "@ntatoud/tvs";
 import { twMerge } from "tailwind-merge";
 
-const button = styra("btn").variants({ size: { sm: "px-2", lg: "px-6" } });
+const button = tvs("btn").variants({ size: { sm: "px-2", lg: "px-6" } });
 
 // Calling twMerge separately
 const cls = twMerge(button({ size: "sm" }), "px-4");
 ```
 
-Correct — configure merge once in `createStyra` and use the returned `styra` and `cn`:
+Correct — configure merge once in `createTvs` and use the returned `tvs` and `cn`:
 
 ```ts
-// lib/styra.ts
-import { createStyra } from "@ntatoud/styra";
+// lib/tvs.ts
+import { createTvs } from "@ntatoud/tvs";
 import { twMerge } from "tailwind-merge";
-export const { styra, cn } = createStyra({ merge: twMerge });
+export const { tvs, cn } = createTvs({ merge: twMerge });
 ```
 
 ### Not using boolean shorthand for simple on/off variants
@@ -298,7 +298,7 @@ Suboptimal — mirrors old CVA workaround pattern:
 
 ```ts
 // SUBOPTIMAL — using object syntax for a boolean state
-const button = styra("btn").variants({
+const button = tvs("btn").variants({
   disabled: { true: "opacity-50", false: "" },
 });
 ```
@@ -307,7 +307,7 @@ Preferred — use boolean shorthand:
 
 ```ts
 // PREFERRED
-const button = styra("btn").variants({
+const button = tvs("btn").variants({
   disabled: "opacity-50 pointer-events-none",
 });
 // disabled prop is inferred as boolean

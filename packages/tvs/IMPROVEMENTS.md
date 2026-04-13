@@ -1,4 +1,4 @@
-# Styra — Improvement Ideas
+# TVS — Improvement Ideas
 
 ## 1. Export a `VariantProps` type helper
 
@@ -17,13 +17,13 @@ Usage: `VariantProps<typeof buttonVariants>` — readable, strips internal props
 Common pattern today:
 
 ```ts
-styra("base").variants({ disabled: { true: "opacity-50", false: "" } });
+tvs("base").variants({ disabled: { true: "opacity-50", false: "" } });
 ```
 
 Could accept a string directly for boolean variants:
 
 ```ts
-styra("base").variants({ disabled: "opacity-50 pointer-events-none" });
+tvs("base").variants({ disabled: "opacity-50 pointer-events-none" });
 ```
 
 Applied when the prop is `true`, skipped when `false`/`undefined`. Covers `isActive`, `disabled`, `open`, etc.
@@ -45,7 +45,7 @@ Avoids recreating builders from scratch and keeps the parent link explicit.
 Components like `Card`, `Sidebar`, `Dialog` have 5-10 sub-elements each with their own classes. A slots API would co-locate them:
 
 ```ts
-const card = styra.slots({
+const card = tvs.slots({
   root: "rounded-xl border bg-card",
   header: "flex flex-col gap-1.5 p-6",
   title: "font-semibold leading-none",

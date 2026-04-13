@@ -1,6 +1,6 @@
 export type MergeFn = (...classes: string[]) => string;
 
-/** A clsx-compatible class value: string, number, boolean, null, undefined, array, or object map. */
+/** A clsx-compatible class value: string, number, boolean, null, undefined, array, object map, or render-prop function. */
 export type ClassValue =
   | string
   | number
@@ -8,7 +8,8 @@ export type ClassValue =
   | null
   | undefined
   | ClassValue[]
-  | Record<string, unknown>;
+  | Record<string, unknown>
+  | ((...args: never[]) => ClassValue);
 
 /**
  * A map of variant keys to their possible values and classes.
@@ -47,7 +48,7 @@ export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
 };
 
 /** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`. */
-export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
+export interface TvsBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   (
     props: keyof V extends never
       ? { class?: ClassValue; className?: ClassValue | ((...args: never[]) => ClassValue) }
@@ -57,24 +58,24 @@ export interface StyraBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
    * Define variant keys and their class mappings.
    * Can only be called once — throws at runtime if called again.
    */
-  variants<NV extends VariantMap>(v: NV): StyraBuilder<NV, Record<never, never>>;
+  variants<NV extends VariantMap>(v: NV): TvsBuilder<NV, Record<never, never>>;
   /** Set default values for variants, making them optional at call-site. */
-  defaults<ND extends DefaultsOf<V>>(d: ND): StyraBuilder<V, ND>;
+  defaults<ND extends DefaultsOf<V>>(d: ND): TvsBuilder<V, ND>;
   /** Add compound variant rules applied when multiple variant conditions are met. */
-  compound(rules: Array<CompoundRule<V>>): StyraBuilder<V, D>;
+  compound(rules: Array<CompoundRule<V>>): TvsBuilder<V, D>;
 }
 
 /** Custom class merge function, e.g. `twMerge` from tailwind-merge. */
-export interface StyraOptions {
+export interface TvsOptions {
   merge?: MergeFn;
 }
 
 /**
- * Extract the variant props from a `StyraBuilder`, stripping `class` and `className`.
+ * Extract the variant props from a `TvsBuilder`, stripping `class` and `className`.
  *
  * @example
  * ```ts
- * const buttonVariants = styra("btn").variants({ size: { sm: "...", md: "..." } });
+ * const buttonVariants = tvs("btn").variants({ size: { sm: "...", md: "..." } });
  * type ButtonVariantProps = VariantProps<typeof buttonVariants>;
  * // → { size: "sm" | "md" }
  * ```

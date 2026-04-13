@@ -1,6 +1,6 @@
 # bench
 
-Micro-benchmark comparing `styra` vs `cva@1.0.0-beta.4` across three scenarios: base class only, variants with defaults, and compound variants.
+Micro-benchmark comparing `tvs` vs `cva@1.0.0-beta.4` across three scenarios: base class only, variants with defaults, and compound variants.
 
 ## Methodology
 
@@ -14,6 +14,6 @@ vp exec tsx src/index.ts
 
 ## Scenarios
 
-1. **Base class only** — `styra("btn")` vs `cva({ base: "btn" })()`
+1. **Base class only** — `tvs("btn")` vs `cva({ base: "btn" })()`
 2. **Variants with defaults** — size/color/disabled variants, `size` defaulted to `"md"`
 3. **Compound variants** — two compound rules on size + color

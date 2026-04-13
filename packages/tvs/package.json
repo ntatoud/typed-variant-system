@@ -1,5 +1,5 @@
 {
-  "name": "@ntatoud/styra",
+  "name": "@ntatoud/tvs",
   "version": "0.2.0",
   "description": "Type-safe class variance builder — a maintained, boosted CVA replacement.",
   "keywords": [
@@ -10,14 +10,14 @@
     "typescript",
     "variants"
   ],
-  "homepage": "https://github.com/ntatoud/styra#readme",
+  "homepage": "https://github.com/ntatoud/tvs#readme",
   "bugs": {
-    "url": "https://github.com/ntatoud/styra/issues"
+    "url": "https://github.com/ntatoud/tvs/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ntatoud/styra.git"
+    "url": "git+https://github.com/ntatoud/tvs.git"
   },
   "files": [
     "dist",

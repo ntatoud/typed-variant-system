@@ -1,5 +1,5 @@
 import * as React from "react";
-import { type VariantProps, cn, styra } from "@/lib/utils";
+import { type VariantProps, cn, tvs } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-const inputGroupAddonVariants = styra(
+const inputGroupAddonVariants = tvs(
   "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
 )
   .variants({
@@ -57,7 +57,7 @@ function InputGroupAddon({
   );
 }
 
-const inputGroupButtonVariants = styra("flex items-center gap-2 text-sm shadow-none")
+const inputGroupButtonVariants = tvs("flex items-center gap-2 text-sm shadow-none")
   .variants({
     size: {
       xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5",

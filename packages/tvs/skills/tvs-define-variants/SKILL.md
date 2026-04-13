@@ -1,28 +1,28 @@
 ---
-name: styra-define-variants
+name: tvs-define-variants
 description: >
-  Define typed variant maps (size, color, state flags) on a styra builder using
+  Define typed variant maps (size, color, state flags) on a tvs builder using
   .variants(), boolean shorthand, .defaults(), and VariantProps. Covers
   class/className ClassValue inputs, optional vs required variant inference, and
   compound-rule key coercion.
 type: core
-library: "@ntatoud/styra"
+library: "@ntatoud/tvs"
 library_version: "0.1.0"
 requires:
-  - styra-getting-started
+  - tvs-getting-started
 sources:
-  - "ntatoud/styra:packages/styra/src/types.ts"
-  - "ntatoud/styra:packages/styra/src/index.ts"
+  - "ntatoud/tvs:packages/tvs/src/types.ts"
+  - "ntatoud/tvs:packages/tvs/src/index.ts"
 ---
 
-This skill builds on styra-getting-started. Read it first for foundational concepts.
+This skill builds on tvs-getting-started. Read it first for foundational concepts.
 
 ## Setup
 
 ```ts
-import { styra, type VariantProps, type ClassValue } from "@ntatoud/styra";
+import { tvs, type VariantProps, type ClassValue } from "@ntatoud/tvs";
 
-const buttonVariants = styra("btn")
+const buttonVariants = tvs("btn")
   .variants({
     size: { sm: "text-sm px-2 py-1", md: "text-base px-4 py-2", lg: "text-lg px-6 py-3" },
     color: { primary: "bg-blue-600 text-white", danger: "bg-red-600 text-white" },
@@ -41,9 +41,9 @@ type ButtonProps = VariantProps<typeof buttonVariants>;
 Pass an object of string keys to string values. Each key becomes a prop; each value becomes the class applied when that key is selected.
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const badge = styra("badge").variants({
+const badge = tvs("badge").variants({
   size: {
     sm: "text-xs px-1",
     md: "text-sm px-2",
@@ -65,9 +65,9 @@ All variant keys are required unless covered by `.defaults()`.
 When a variant value is a plain string instead of an object, the prop becomes `boolean`. The string is applied when the prop is `true`; nothing is applied when it is `false` or `undefined`.
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const btn = styra("btn").variants({
+const btn = tvs("btn").variants({
   disabled: "opacity-50 pointer-events-none",
   active: "ring-2 ring-offset-2",
 });
@@ -84,9 +84,9 @@ Internally the shorthand `"opacity-50 pointer-events-none"` is stored as `{ true
 Call `.defaults()` with a partial map of variant keys to their default values. Variants covered by a default become optional in the inferred props type; uncovered variants remain required.
 
 ```ts
-import { styra, type VariantProps } from "@ntatoud/styra";
+import { tvs, type VariantProps } from "@ntatoud/tvs";
 
-const chip = styra("chip")
+const chip = tvs("chip")
   .variants({
     size: { sm: "text-xs", md: "text-sm", lg: "text-base" },
     color: { blue: "bg-blue-100", green: "bg-green-100" },
@@ -106,9 +106,9 @@ chip({ size: "lg", color: "green" }); // "chip text-base bg-green-100"
 Both `class` and `className` props accept a `ClassValue`: a string, number, boolean, null, undefined, an array of `ClassValue`, or a `Record<string, unknown>` where truthy values include the key as a class. `className` also accepts a render-prop function returning `ClassValue`.
 
 ```ts
-import { styra, type ClassValue } from "@ntatoud/styra";
+import { tvs, type ClassValue } from "@ntatoud/tvs";
 
-const btn = styra("btn").variants({ disabled: "opacity-50" });
+const btn = tvs("btn").variants({ disabled: "opacity-50" });
 
 // String
 btn({ disabled: false, class: "mt-4" }); // "btn mt-4"
@@ -139,20 +139,20 @@ Without a default, a missing variant resolves to `undefined`, which maps to no c
 
 ```ts
 // Wrong — size has no default and is not passed; TypeScript error is suppressed by `as any`
-const card = styra("card").variants({ size: { sm: "p-2", lg: "p-6" } });
+const card = tvs("card").variants({ size: { sm: "p-2", lg: "p-6" } });
 (card as any)({}); // "card" — size class is silently dropped
 ```
 
 ```ts
 // Correct — either pass the variant or add a default
-const card = styra("card")
+const card = tvs("card")
   .variants({ size: { sm: "p-2", lg: "p-6" } })
   .defaults({ size: "sm" });
 
 card({}); // "card p-2"
 ```
 
-Always use `VariantProps<typeof yourVariants>` as your component's prop type so TypeScript enforces required variants at call sites. Source: `packages/styra/src/types.ts` — `InferProps`.
+Always use `VariantProps<typeof yourVariants>` as your component's prop type so TypeScript enforces required variants at call sites. Source: `packages/tvs/src/types.ts` — `InferProps`.
 
 ### [HIGH] Using `{ true: "...", false: "" }` when boolean shorthand is available
 
@@ -160,19 +160,19 @@ Explicit two-key objects are verbose and error-prone. Boolean shorthand produces
 
 ```ts
 // Wrong — verbose, no benefit over shorthand
-const btn = styra("btn").variants({
+const btn = tvs("btn").variants({
   disabled: { true: "opacity-50 pointer-events-none", false: "" },
 });
 ```
 
 ```ts
 // Correct — boolean shorthand
-const btn = styra("btn").variants({
+const btn = tvs("btn").variants({
   disabled: "opacity-50 pointer-events-none",
 });
 ```
 
-The implementation converts the plain string to `{ true: raw, false: "" }` internally. Source: `packages/styra/src/index.ts` — `makeBuilder`.
+The implementation converts the plain string to `{ true: raw, false: "" }` internally. Source: `packages/tvs/src/index.ts` — `makeBuilder`.
 
 ### [HIGH] Passing a boolean key in a compound rule when the stored key is the string `"true"`
 
@@ -180,19 +180,19 @@ Boolean shorthand stores the value under the string key `"true"`, not the JavaSc
 
 ```ts
 // Wrong — boolean true is not a valid key in a compound rule
-const btn = styra("btn")
+const btn = tvs("btn")
   .variants({ disabled: "opacity-50", color: { red: "bg-red-500", blue: "bg-blue-500" } })
   .compounds([{ disabled: true, color: "red", class: "border-red-700" }]); // runtime miss
 ```
 
 ```ts
 // Correct — use the string "true" as the key value
-const btn = styra("btn")
+const btn = tvs("btn")
   .variants({ disabled: "opacity-50", color: { red: "bg-red-500", blue: "bg-blue-500" } })
   .compounds([{ disabled: "true", color: "red", class: "border-red-700" }]);
 ```
 
-The `toKey` coercion applies only to incoming prop values, not to the keys written in compound rule objects. Source: `packages/styra/src/index.ts` — `toKey`.
+The `toKey` coercion applies only to incoming prop values, not to the keys written in compound rule objects. Source: `packages/tvs/src/index.ts` — `toKey`.
 
 ### [MEDIUM] Expecting `VariantProps` to include `class` or `className`
 
@@ -200,19 +200,19 @@ The `toKey` coercion applies only to incoming prop values, not to the keys writt
 
 ```ts
 // Wrong — class is stripped from VariantProps
-import { type VariantProps } from "@ntatoud/styra";
+import { type VariantProps } from "@ntatoud/tvs";
 
-const btn = styra("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
+const btn = tvs("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
 type BtnProps = VariantProps<typeof btn> & { onClick: () => void };
 // BtnProps has no `class` or `className` — passing class from the parent is a TypeScript error
 ```
 
 ```ts
 // Correct — add ClassValue explicitly when the component needs to accept extra classes
-import { styra, type VariantProps, type ClassValue } from "@ntatoud/styra";
+import { tvs, type VariantProps, type ClassValue } from "@ntatoud/tvs";
 
-const btn = styra("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
+const btn = tvs("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
 type BtnProps = VariantProps<typeof btn> & { class?: ClassValue; onClick: () => void };
 ```
 
-Source: `packages/styra/src/types.ts` — `VariantProps`.
+Source: `packages/tvs/src/types.ts` — `VariantProps`.

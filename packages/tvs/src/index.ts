@@ -4,8 +4,8 @@ import type {
   DefaultsOf,
   MergeFn,
   Not,
-  StyraBuilder,
-  StyraOptions,
+  TvsBuilder,
+  TvsOptions,
   VariantMap,
 } from "./types.js";
 
@@ -41,7 +41,7 @@ function toVal(mix: ClassValue): string {
       if (mix[k]) {
         const y = toVal(mix[k] as ClassValue);
         if (y) {
-          str && (str += " ");
+          if (str) str += " ";
           str += y;
         }
       }
@@ -49,7 +49,7 @@ function toVal(mix: ClassValue): string {
   } else if (mix !== null && typeof mix === "object") {
     for (const y in mix) {
       if ((mix as Record<string, unknown>)[y]) {
-        str && (str += " ");
+        if (str) str += " ";
         str += y;
       }
     }
@@ -79,7 +79,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
   compoundRules: Array<CompoundRule<V>>,
   customMerge: MergeFn | undefined,
   variantsLocked: boolean,
-): StyraBuilder<V, D> {
+): TvsBuilder<V, D> {
   // Flatten variant lookup at build time: one array, no double property access per call
   const defaultMapRaw = defaultMap as Record<string, unknown>;
   const resolvers: Resolver[] = Object.keys(variantMap).map((key) => {
@@ -173,7 +173,7 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
 
   call.variants = function <NV extends VariantMap>(v: NV) {
     if (variantsLocked) {
-      throw new Error("styra: .variants() can only be called once per builder");
+      throw new Error("tvs: .variants() can only be called once per builder");
     }
     return makeBuilder(base, v, {} as Record<never, never>, [], customMerge, true);
   };
@@ -186,13 +186,13 @@ function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
     return makeBuilder(base, variantMap, defaultMap, rules, customMerge, variantsLocked);
   };
 
-  return call as unknown as StyraBuilder<V, D>;
+  return call as unknown as TvsBuilder<V, D>;
 }
 
 export type {
   ClassValue,
-  StyraBuilder,
-  StyraOptions,
+  TvsBuilder,
+  TvsOptions,
   VariantMap,
   CompoundRule,
   InferProps,
@@ -200,20 +200,20 @@ export type {
 } from "./types.js";
 
 /**
- * Create a configured `styra` factory.
+ * Create a configured `tvs` factory.
  *
  * @example
  * ```ts
- * import { createStyra } from 'styra'
+ * import { createTvs } from 'tvs'
  * import { twMerge } from 'tailwind-merge'
  *
- * export const { styra, cn } = createStyra({ merge: twMerge })
+ * export const { tvs, cn } = createTvs({ merge: twMerge })
  * ```
  */
-export function createStyra(options?: StyraOptions) {
+export function createTvs(options?: TvsOptions) {
   const customMerge = options?.merge;
 
-  function styra(base: string): StyraBuilder<Record<never, never>, Record<never, never>> {
+  function tvs(base: string): TvsBuilder<Record<never, never>, Record<never, never>> {
     return makeBuilder(
       base,
       {} as Record<never, never>,
@@ -229,15 +229,15 @@ export function createStyra(options?: StyraOptions) {
     for (let i = 0; i < args.length; i++) {
       const val = toVal(args[i]);
       if (val) {
-        str && (str += " ");
+        if (str) str += " ";
         str += val;
       }
     }
     return customMerge ? customMerge(str) : str;
   }
 
-  return { styra, cn };
+  return { tvs, cn };
 }
 
-/** Default `styra` instance with no custom merge function. */
-export const { styra, cn } = createStyra();
+/** Default `tvs` instance with no custom merge function. */
+export const { tvs, cn } = createTvs();

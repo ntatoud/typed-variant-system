@@ -1,5 +1,5 @@
-import { createStyra, type VariantProps } from "@ntatoud/styra";
+import { createTvs, type VariantProps } from "@ntatoud/tvs";
 import { twMerge } from "tailwind-merge";
 
 export type { VariantProps };
-export const { styra, cn } = createStyra({ merge: twMerge });
+export const { tvs, cn } = createTvs({ merge: twMerge });

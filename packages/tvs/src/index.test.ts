@@ -1,40 +1,40 @@
 import { describe, expect, it } from "vite-plus/test";
-import { cn, createStyra, styra } from "./index.js";
+import { cn, createTvs, tvs } from "./index.js";
 
-describe("styra — base class", () => {
+describe("tvs — base class", () => {
   it("returns the base class when called with no variants", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({})).toBe("btn");
   });
 
   it("appends class override", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({ class: "mt-4" })).toBe("btn mt-4");
   });
 
   it("appends className override", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({ className: "mt-4" })).toBe("btn mt-4");
   });
 
   it("appends both class and className", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({ class: "mt-2", className: "mt-4" })).toBe("btn mt-2 mt-4");
   });
 
   it("calls className function with no args and appends result", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({ className: () => "mt-4" })).toBe("btn mt-4");
   });
 
   it("ignores className function that returns undefined", () => {
-    const btn = styra("btn");
+    const btn = tvs("btn");
     expect(btn({ className: () => undefined })).toBe("btn");
   });
 });
 
-describe("styra — variants", () => {
-  const btn = styra("btn").variants({
+describe("tvs — variants", () => {
+  const btn = tvs("btn").variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue" },
   });
@@ -48,8 +48,8 @@ describe("styra — variants", () => {
   });
 });
 
-describe("styra — defaults", () => {
-  const btn = styra("btn")
+describe("tvs — defaults", () => {
+  const btn = tvs("btn")
     .variants({ size: { sm: "text-sm", md: "text-md" }, color: { red: "bg-red", blue: "bg-blue" } })
     .defaults({ size: "md" });
 
@@ -62,8 +62,8 @@ describe("styra — defaults", () => {
   });
 });
 
-describe("styra — compound variants", () => {
-  const btn = styra("btn")
+describe("tvs — compound variants", () => {
+  const btn = tvs("btn")
     .variants({ size: { sm: "text-sm", md: "text-md" }, color: { red: "bg-red", blue: "bg-blue" } })
     .compound([{ size: "sm", color: "red", class: "ring-red" }]);
 
@@ -76,8 +76,8 @@ describe("styra — compound variants", () => {
   });
 });
 
-describe("styra — compound variants with negation", () => {
-  const btn = styra("btn")
+describe("tvs — compound variants with negation", () => {
+  const btn = tvs("btn")
     .variants({
       size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
       color: { red: "bg-red", blue: "bg-blue" },
@@ -94,8 +94,8 @@ describe("styra — compound variants with negation", () => {
   });
 });
 
-describe("styra — boolean variant shorthand", () => {
-  const btn = styra("btn").variants({
+describe("tvs — boolean variant shorthand", () => {
+  const btn = tvs("btn").variants({
     disabled: "opacity-50 pointer-events-none",
     active: "ring-2",
   });
@@ -113,23 +113,23 @@ describe("styra — boolean variant shorthand", () => {
   });
 
   it("uses default value for boolean shorthand", () => {
-    const btn2 = styra("btn").variants({ disabled: "opacity-50" }).defaults({ disabled: false });
+    const btn2 = tvs("btn").variants({ disabled: "opacity-50" }).defaults({ disabled: false });
     expect(btn2({})).toBe("btn");
     expect(btn2({ disabled: true })).toBe("btn opacity-50");
   });
 });
 
-describe("styra — error on double .variants()", () => {
+describe("tvs — error on double .variants()", () => {
   it("throws if .variants() is called a second time", () => {
-    const builder = styra("btn").variants({ size: { sm: "text-sm" } });
+    const builder = tvs("btn").variants({ size: { sm: "text-sm" } });
     expect(() => builder.variants({ color: { red: "bg-red" } })).toThrow(
-      "styra: .variants() can only be called once per builder",
+      "tvs: .variants() can only be called once per builder",
     );
   });
 });
 
-describe("styra — clsx-like class syntax", () => {
-  const btn = styra("btn");
+describe("tvs — clsx-like class syntax", () => {
+  const btn = tvs("btn");
 
   it("accepts an array for class", () => {
     expect(btn({ class: ["mt-4", "px-2"] })).toBe("btn mt-4 px-2");
@@ -179,7 +179,7 @@ describe("cn — default instance", () => {
 describe("cn — with custom merge", () => {
   it("passes resolved string through merge function", () => {
     const calls: string[] = [];
-    const { cn: customCn } = createStyra({
+    const { cn: customCn } = createTvs({
       merge: (...c) => {
         calls.push(...c);
         return c.join("|");
@@ -191,23 +191,23 @@ describe("cn — with custom merge", () => {
   });
 });
 
-describe("createStyra — custom merge", () => {
+describe("createTvs — custom merge", () => {
   it("uses the provided merge function", () => {
     const calls: string[][] = [];
     const customMerge = (...classes: string[]) => {
       calls.push(classes);
       return classes.join("|");
     };
-    const { styra: customStyra } = createStyra({ merge: customMerge });
-    const btn = customStyra("btn").variants({ size: { sm: "text-sm" } });
+    const { tvs: customTvs } = createTvs({ merge: customMerge });
+    const btn = customTvs("btn").variants({ size: { sm: "text-sm" } });
     const result = btn({ size: "sm" });
     expect(result).toBe("btn|text-sm");
     expect(calls).toHaveLength(1);
   });
 
   it("two instances with different merge functions are independent", () => {
-    const { styra: a } = createStyra({ merge: (...c) => c.join("-") });
-    const { styra: b } = createStyra({ merge: (...c) => c.join("_") });
+    const { tvs: a } = createTvs({ merge: (...c) => c.join("-") });
+    const { tvs: b } = createTvs({ merge: (...c) => c.join("_") });
     expect(a("x").variants({ s: { y: "y" } })({ s: "y" })).toBe("x-y");
     expect(b("x").variants({ s: { y: "y" } })({ s: "y" })).toBe("x_y");
   });

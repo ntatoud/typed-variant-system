@@ -1,7 +1,7 @@
 ---
-name: styra-compound-variants
+name: tvs-compound-variants
 description: >
-  Compound variant rules for @ntatoud/styra v0.1.0 — .compound([rules]) syntax,
+  Compound variant rules for @ntatoud/tvs v0.1.0 — .compound([rules]) syntax,
   exact-match conditions (all keys must match for rule to fire), Not<T> negation
   ({ variantKey: { not: value } } — fires when variant is NOT that value),
   multiple independent rules (additive), boolean shorthand coercion ("true"/"false"
@@ -9,28 +9,28 @@ description: >
   Preempts: { not: true } instead of { not: "true" } for boolean props,
   missing class key in rule, compoundVariants CVA migration pitfall.
 type: core
-library: "@ntatoud/styra"
+library: "@ntatoud/tvs"
 library_version: "0.1.0"
 requires:
-  - styra-define-variants
+  - tvs-define-variants
 sources:
-  - "ntatoud/styra:packages/styra/src/index.ts"
-  - "ntatoud/styra:packages/styra/src/types.ts"
+  - "ntatoud/tvs:packages/tvs/src/index.ts"
+  - "ntatoud/tvs:packages/tvs/src/types.ts"
 ---
 
 # Compound Variants
 
-This skill builds on styra-define-variants. Read it first for foundational concepts.
+This skill builds on tvs-define-variants. Read it first for foundational concepts.
 
 ## 1. Setup
 
 Minimum viable example — exact-match rule and negation rule:
 
 ```ts
-import { styra, type CompoundRule, type Not } from "@ntatoud/styra";
+import { tvs, type CompoundRule, type Not } from "@ntatoud/tvs";
 
 // Exact-match: ring-red only when size=sm AND color=red
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-base", lg: "text-lg" },
     color: { red: "bg-red-500", blue: "bg-blue-500" },
@@ -45,10 +45,10 @@ button({ size: "md", color: "red" });
 ```
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
 // Negation: hover:opacity-80 on everything EXCEPT when size=sm
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-base", lg: "text-lg" },
     color: { red: "bg-red-500", blue: "bg-blue-500" },
@@ -71,9 +71,9 @@ button({ size: "sm", color: "red" });
 All rules are evaluated independently. Every matching rule contributes its class.
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const badge = styra("badge")
+const badge = tvs("badge")
   .variants({
     size: { sm: "text-sm", lg: "text-lg" },
     color: { red: "bg-red-500", blue: "bg-blue-500" },
@@ -98,9 +98,9 @@ badge({ size: "lg", color: "red", outlined: true });
 `{ not: value }` makes a condition fire when the variant is anything other than `value`.
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-base", lg: "text-lg" },
   })
@@ -124,9 +124,9 @@ button({ size: "sm" });
 Boolean shorthand variants store their state as the string `"true"` or `"false"` internally. Negation must use the string form.
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({
     size: { sm: "text-sm", lg: "text-lg" },
     disabled: "opacity-50 cursor-not-allowed",
@@ -151,10 +151,10 @@ button({ size: "sm", disabled: true });
 When building rules outside the builder call, use the exported generic types.
 
 ```ts
-import { styra, type CompoundRule, type Not } from "@ntatoud/styra";
-import type { VariantProps } from "@ntatoud/styra";
+import { tvs, type CompoundRule, type Not } from "@ntatoud/tvs";
+import type { VariantProps } from "@ntatoud/tvs";
 
-const button = styra("btn").variants({
+const button = tvs("btn").variants({
   size: { sm: "text-sm", md: "text-base", lg: "text-lg" },
   color: { red: "bg-red-500", blue: "bg-blue-500" },
 });
@@ -185,9 +185,9 @@ styledButton({ size: "sm", color: "red" });
 **Wrong**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ disabled: "opacity-50" })
   .compound([
     { disabled: { not: true }, class: "hover:opacity-80" }, // not: true — boolean, never matches
@@ -200,9 +200,9 @@ button({ disabled: true });
 **Correct**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ disabled: "opacity-50" })
   .compound([
     { disabled: { not: "true" }, class: "hover:opacity-80" }, // not: "true" — string key
@@ -212,7 +212,7 @@ button({ disabled: true });
 // → "btn opacity-50"  (hover correctly blocked)
 ```
 
-Boolean shorthand variants coerce `true`/`false` props to the string keys `"true"`/`"false"` internally. The negation value must match the stored string key, not the JavaScript boolean. Source: `ntatoud/styra:packages/styra/src/index.ts`
+Boolean shorthand variants coerce `true`/`false` props to the string keys `"true"`/`"false"` internally. The negation value must match the stored string key, not the JavaScript boolean. Source: `ntatoud/tvs:packages/tvs/src/index.ts`
 
 ---
 
@@ -221,9 +221,9 @@ Boolean shorthand variants coerce `true`/`false` props to the string keys `"true
 **Wrong**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" }, color: { red: "bg-red-500" } })
   .compound([
     { size: "sm", color: "red" }, // TypeScript error: missing 'class' property
@@ -233,14 +233,14 @@ const button = styra("btn")
 **Correct**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" }, color: { red: "bg-red-500" } })
   .compound([{ size: "sm", color: "red", class: "ring-red-300" }]);
 ```
 
-`CompoundRule<V>` requires `class: string`. TypeScript will catch the omission at compile time; at runtime the rule is silently skipped because there is no class to apply. Always include the `class` key. Source: `ntatoud/styra:packages/styra/src/types.ts`
+`CompoundRule<V>` requires `class: string`. TypeScript will catch the omission at compile time; at runtime the rule is silently skipped because there is no class to apply. Always include the `class` key. Source: `ntatoud/tvs:packages/tvs/src/types.ts`
 
 ---
 
@@ -249,10 +249,10 @@ const button = styra("btn")
 **Wrong**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-// CVA-style API — does not exist in styra
-const button = styra("btn", {
+// CVA-style API — does not exist in tvs
+const button = tvs("btn", {
   variants: { size: { sm: "text-sm", lg: "text-lg" } },
   compoundVariants: [{ size: "sm", class: "ring-sm" }], // ignored — not a valid option
 });
@@ -261,14 +261,14 @@ const button = styra("btn", {
 **Correct**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" } })
   .compound([{ size: "sm", class: "ring-sm" }]);
 ```
 
-Styra uses a builder chain, not a config object. Compound rules are attached via `.compound([...])` on the builder, not a `compoundVariants` key. Source: `ntatoud/styra:packages/styra/src/index.ts`
+Styra uses a builder chain, not a config object. Compound rules are attached via `.compound([...])` on the builder, not a `compoundVariants` key. Source: `ntatoud/tvs:packages/tvs/src/index.ts`
 
 ---
 
@@ -277,10 +277,10 @@ Styra uses a builder chain, not a config object. Compound rules are attached via
 **Wrong**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
 // Using compound just to apply a class when a single variant has a specific value
-const button = styra("btn")
+const button = tvs("btn")
   .variants({ intent: { primary: "bg-blue-600", danger: "bg-red-600" } })
   .compound([
     { intent: "primary", class: "text-white" },
@@ -291,10 +291,10 @@ const button = styra("btn")
 **Correct**
 
 ```ts
-import { styra } from "@ntatoud/styra";
+import { tvs } from "@ntatoud/tvs";
 
 // Just include the class in the variant map
-const button = styra("btn").variants({
+const button = tvs("btn").variants({
   intent: {
     primary: "bg-blue-600 text-white",
     danger: "bg-red-600 text-white",
@@ -302,4 +302,4 @@ const button = styra("btn").variants({
 });
 ```
 
-`.compound()` is for cases where a class depends on the intersection of two or more variant values simultaneously. Single-variant class assignments belong directly in the variant map. Source: `ntatoud/styra:packages/styra/src/index.ts`
+`.compound()` is for cases where a class depends on the intersection of two or more variant values simultaneously. Single-variant class assignments belong directly in the variant map. Source: `ntatoud/tvs:packages/tvs/src/index.ts`

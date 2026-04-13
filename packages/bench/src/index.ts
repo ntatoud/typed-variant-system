@@ -1,11 +1,11 @@
 import { cva } from "cva";
-import { cn, styra } from "@ntatoud/styra";
+import { cn, tvs } from "@ntatoud/tvs";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
 // Scenario 1: base class only
 const cvaBase = cva({ base: "btn" });
-const styraBase = styra("btn");
+const tvsBase = tvs("btn");
 
 // Scenario 2: variants
 const cvaVariants = cva({
@@ -18,7 +18,7 @@ const cvaVariants = cva({
   defaultVariants: { size: "md" },
 });
 
-const styraVariants = styra("btn")
+const tvsVariants = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
@@ -39,7 +39,7 @@ const cvaCompound = cva({
   ],
 });
 
-const styraCompound = styra("btn")
+const tvsCompound = tvs("btn")
   .variants({
     size: { sm: "text-sm", md: "text-md" },
     color: { red: "bg-red", blue: "bg-blue" },
@@ -79,30 +79,30 @@ function bench(label: string, fn: () => void, iterations = 200): number {
   return avg;
 }
 
-function compare(title: string, cvaFn: () => void, styraFn: () => void) {
+function compare(title: string, cvaFn: () => void, tvsFn: () => void) {
   console.log(`\n── ${title} ──`);
   const cvaAvg = bench("cva", cvaFn);
-  const styraAvg = bench("styra", styraFn);
-  const ratio = cvaAvg / styraAvg;
+  const tvsAvg = bench("tvs", tvsFn);
+  const ratio = cvaAvg / tvsAvg;
   console.log(
-    `  → styra is ${ratio >= 1 ? ratio.toFixed(2) + "x faster" : (1 / ratio).toFixed(2) + "x slower"} than cva`,
+    `  → tvs is ${ratio >= 1 ? ratio.toFixed(2) + "x faster" : (1 / ratio).toFixed(2) + "x slower"} than cva`,
   );
 }
 
 compare(
   "1. base class only",
   () => cvaBase(),
-  () => styraBase({}),
+  () => tvsBase({}),
 );
 compare(
   "2. variants (with default)",
   () => cvaVariants({ color: "red", disabled: "yes" }),
-  () => styraVariants({ color: "red", disabled: "yes" }),
+  () => tvsVariants({ color: "red", disabled: "yes" }),
 );
 compare(
   "3. compound variants",
   () => cvaCompound({ size: "sm", color: "red" }),
-  () => styraCompound({ size: "sm", color: "red" }),
+  () => tvsCompound({ size: "sm", color: "red" }),
 );
 
 // ─── clsx-like syntax scenarios ───────────────────────────────────────────────
@@ -113,28 +113,28 @@ const cvaWithClass = cva({ base: "btn", variants: { size: { sm: "text-sm", md: "
 compare(
   "4. class: string",
   () => cvaWithClass({ size: "sm", class: "mt-4" }),
-  () => styraVariants({ size: "sm", color: "red", disabled: "no", class: "mt-4" }),
+  () => tvsVariants({ size: "sm", color: "red", disabled: "no", class: "mt-4" }),
 );
 
 // Scenario 5: class as array
 compare(
   "5. class: array",
   () => cvaWithClass({ size: "sm", class: "mt-4 px-2" }),
-  () => styraBase({ class: ["mt-4", "px-2"] }),
+  () => tvsBase({ class: ["mt-4", "px-2"] }),
 );
 
 // Scenario 6: class as object (conditional classes)
 compare(
   "6. class: object",
   () => cvaWithClass({ size: "sm", class: "mt-4" }),
-  () => styraBase({ class: { "mt-4": true, "px-2": false, "font-bold": true } }),
+  () => tvsBase({ class: { "mt-4": true, "px-2": false, "font-bold": true } }),
 );
 
 // Scenario 7: class as nested array + object mix
 compare(
   "7. class: nested array+object",
   () => cvaWithClass({ size: "sm", class: "mt-4 px-2 font-bold" }),
-  () => styraBase({ class: ["mt-4", ["px-2", { "font-bold": true, italic: false }]] }),
+  () => tvsBase({ class: ["mt-4", ["px-2", { "font-bold": true, italic: false }]] }),
 );
 
 // Scenario 8: cn utility — strings
