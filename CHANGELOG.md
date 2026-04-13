@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `tvs` will be documented in this file.
+All notable changes to `typed-variant-system` will be documented in this file.
 
 ## [0.3.0] - 2026-04-13
 
@@ -10,7 +10,7 @@ All notable changes to `tvs` will be documented in this file.
 
 ### Changed
 
-- Rename package from `styra` to `tvs`
+- Rename package from `styra` to `typed-variant-system`
 - Remove `@ntatoud` scope prefix from package name
 
 ### Removed
