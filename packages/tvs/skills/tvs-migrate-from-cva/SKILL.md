@@ -1,13 +1,13 @@
 ---
 name: tvs-migrate-from-cva
 description: >
-  Migrate from CVA (class-variance-authority) to @ntatoud/tvs. Maps cva() config object
+  Migrate from CVA (class-variance-authority) to tvs. Maps cva() config object
   syntax to tvs builder chain: variants(), defaults(), compound(). Covers cx/clsx → cn,
   VariantProps (unchanged), createStyra for merge config, boolean shorthand variants,
   and negation in compound rules. Use when converting class-variance-authority imports
   or cva() calls to the tvs builder API.
 type: lifecycle
-library: "@ntatoud/tvs"
+library: "tvs"
 library_version: "0.1.0"
 sources:
   - "ntatoud/tvs:packages/tvs/src/index.ts"
@@ -16,20 +16,20 @@ sources:
 
 # Migrate from CVA to tvs
 
-This skill covers replacing `class-variance-authority` with `@ntatoud/tvs`. The core
+This skill covers replacing `class-variance-authority` with `tvs`. The core
 difference: CVA uses a single config object; tvs uses a builder chain.
 
 ## API Mapping
 
-| CVA                                                            | tvs                                                |
-| -------------------------------------------------------------- | -------------------------------------------------- |
-| `import { cva } from "class-variance-authority"`               | `import { tvs } from "@ntatoud/tvs"`               |
-| `import { cx } from "class-variance-authority"`                | `import { cn } from "@ntatoud/tvs"`                |
-| `import { type VariantProps } from "class-variance-authority"` | `import { type VariantProps } from "@ntatoud/tvs"` |
-| `cva(base, { variants })`                                      | `tvs(base).variants({})`                           |
-| `cva(base, { defaultVariants })`                               | `.defaults({})`                                    |
-| `cva(base, { compoundVariants })`                              | `.compound([])`                                    |
-| CVA + clsx + twMerge (manual)                                  | `createTvs({ merge: twMerge })`                    |
+| CVA                                                            | tvs                                       |
+| -------------------------------------------------------------- | ----------------------------------------- |
+| `import { cva } from "class-variance-authority"`               | `import { tvs } from "tvs"`               |
+| `import { cx } from "class-variance-authority"`                | `import { cn } from "tvs"`                |
+| `import { type VariantProps } from "class-variance-authority"` | `import { type VariantProps } from "tvs"` |
+| `cva(base, { variants })`                                      | `tvs(base).variants({})`                  |
+| `cva(base, { defaultVariants })`                               | `.defaults({})`                           |
+| `cva(base, { compoundVariants })`                              | `.compound([])`                           |
+| CVA + clsx + twMerge (manual)                                  | `createTvs({ merge: twMerge })`           |
 
 `VariantProps<typeof fn>` is identical — no change in usage.
 
@@ -39,7 +39,7 @@ Remove CVA, install tvs:
 
 ```bash
 vp remove class-variance-authority
-vp add @ntatoud/tvs
+vp add tvs
 ```
 
 ## Patterns
@@ -66,7 +66,7 @@ type ButtonProps = VariantProps<typeof button>;
 After:
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -94,7 +94,7 @@ const classes = cx("base", condition && "extra");
 After:
 
 ```ts
-import { cn } from "@ntatoud/tvs";
+import { cn } from "tvs";
 
 const classes = cn("base", condition && "extra");
 ```
@@ -124,7 +124,7 @@ After:
 
 ```ts
 // lib/tvs.ts
-import { createTvs } from "@ntatoud/tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 export const { tvs, cn } = createTvs({ merge: twMerge });
@@ -142,14 +142,14 @@ type ButtonProps = VariantProps<typeof button>;
 ```
 
 Import `tvs` and `cn` from your local `lib/tvs` module everywhere instead of from
-`@ntatoud/tvs` directly.
+`tvs` directly.
 
 ### Variants with no default (required prop)
 
 If a variant has no entry in `.defaults()`, its prop is required in the inferred type.
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const badge = tvs("badge")
   .variants({
@@ -169,7 +169,7 @@ CVA did not support boolean variants. In tvs, a variant value that is a string (
 object) defines a boolean prop — the class applies when the prop is `true`.
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -195,7 +195,7 @@ CVA compound variants only matched when all listed keys matched. Styra allows ne
 `{ not: value }` in compound entries.
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -221,7 +221,7 @@ Wrong — this is CVA syntax, not valid tvs:
 
 ```ts
 // WRONG
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn", {
   variants: { size: { sm: "text-sm" } },
@@ -234,7 +234,7 @@ Correct — tvs uses a builder chain:
 
 ```ts
 // CORRECT
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ size: { sm: "text-sm" } })
@@ -274,7 +274,7 @@ Wrong — this bypasses tvs's merge integration:
 
 ```ts
 // WRONG — manually merging outside of tvs
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 const button = tvs("btn").variants({ size: { sm: "px-2", lg: "px-6" } });
@@ -287,7 +287,7 @@ Correct — configure merge once in `createTvs` and use the returned `tvs` and `
 
 ```ts
 // lib/tvs.ts
-import { createTvs } from "@ntatoud/tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 export const { tvs, cn } = createTvs({ merge: twMerge });
 ```

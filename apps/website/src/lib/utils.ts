@@ -1,4 +1,4 @@
-import { createTvs, type VariantProps } from "@ntatoud/tvs";
+import { createTvs, type VariantProps } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 export type { VariantProps };

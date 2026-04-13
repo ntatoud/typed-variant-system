@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { cn, tvs } from "@ntatoud/tvs";
+import { cn, tvs } from "tvs";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 

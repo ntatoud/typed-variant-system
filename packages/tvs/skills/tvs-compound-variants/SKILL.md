@@ -1,7 +1,7 @@
 ---
 name: tvs-compound-variants
 description: >
-  Compound variant rules for @ntatoud/tvs v0.1.0 — .compound([rules]) syntax,
+  Compound variant rules for tvs v0.1.0 — .compound([rules]) syntax,
   exact-match conditions (all keys must match for rule to fire), Not<T> negation
   ({ variantKey: { not: value } } — fires when variant is NOT that value),
   multiple independent rules (additive), boolean shorthand coercion ("true"/"false"
@@ -9,7 +9,7 @@ description: >
   Preempts: { not: true } instead of { not: "true" } for boolean props,
   missing class key in rule, compoundVariants CVA migration pitfall.
 type: core
-library: "@ntatoud/tvs"
+library: "tvs"
 library_version: "0.1.0"
 requires:
   - tvs-define-variants
@@ -27,7 +27,7 @@ This skill builds on tvs-define-variants. Read it first for foundational concept
 Minimum viable example — exact-match rule and negation rule:
 
 ```ts
-import { tvs, type CompoundRule, type Not } from "@ntatoud/tvs";
+import { tvs, type CompoundRule, type Not } from "tvs";
 
 // Exact-match: ring-red only when size=sm AND color=red
 const button = tvs("btn")
@@ -45,7 +45,7 @@ button({ size: "md", color: "red" });
 ```
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 // Negation: hover:opacity-80 on everything EXCEPT when size=sm
 const button = tvs("btn")
@@ -71,7 +71,7 @@ button({ size: "sm", color: "red" });
 All rules are evaluated independently. Every matching rule contributes its class.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const badge = tvs("badge")
   .variants({
@@ -98,7 +98,7 @@ badge({ size: "lg", color: "red", outlined: true });
 `{ not: value }` makes a condition fire when the variant is anything other than `value`.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -124,7 +124,7 @@ button({ size: "sm" });
 Boolean shorthand variants store their state as the string `"true"` or `"false"` internally. Negation must use the string form.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -151,8 +151,8 @@ button({ size: "sm", disabled: true });
 When building rules outside the builder call, use the exported generic types.
 
 ```ts
-import { tvs, type CompoundRule, type Not } from "@ntatoud/tvs";
-import type { VariantProps } from "@ntatoud/tvs";
+import { tvs, type CompoundRule, type Not } from "tvs";
+import type { VariantProps } from "tvs";
 
 const button = tvs("btn").variants({
   size: { sm: "text-sm", md: "text-base", lg: "text-lg" },
@@ -185,7 +185,7 @@ styledButton({ size: "sm", color: "red" });
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ disabled: "opacity-50" })
@@ -200,7 +200,7 @@ button({ disabled: true });
 **Correct**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ disabled: "opacity-50" })
@@ -221,7 +221,7 @@ Boolean shorthand variants coerce `true`/`false` props to the string keys `"true
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" }, color: { red: "bg-red-500" } })
@@ -233,7 +233,7 @@ const button = tvs("btn")
 **Correct**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" }, color: { red: "bg-red-500" } })
@@ -249,7 +249,7 @@ const button = tvs("btn")
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 // CVA-style API — does not exist in tvs
 const button = tvs("btn", {
@@ -261,7 +261,7 @@ const button = tvs("btn", {
 **Correct**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" } })
@@ -277,7 +277,7 @@ Styra uses a builder chain, not a config object. Compound rules are attached via
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 // Using compound just to apply a class when a single variant has a specific value
 const button = tvs("btn")
@@ -291,7 +291,7 @@ const button = tvs("btn")
 **Correct**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 // Just include the class in the variant map
 const button = tvs("btn").variants({

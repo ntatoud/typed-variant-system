@@ -7,8 +7,8 @@
     "bench": "vp exec tsx src/index.ts"
   },
   "dependencies": {
-    "@ntatoud/tvs": "workspace:*",
-    "cva": "1.0.0-beta.4"
+    "cva": "1.0.0-beta.4",
+    "tvs": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

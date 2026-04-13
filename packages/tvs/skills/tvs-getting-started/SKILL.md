@@ -1,20 +1,20 @@
 ---
 name: tvs-getting-started
 description: >
-  Full setup guide for @ntatoud/tvs v0.1.0 — type-safe class variance builder.
+  Full setup guide for tvs v0.1.0 — type-safe class variance builder.
   Covers install, tvs(base).variants().defaults() builder chain, class/className
   override props with clsx syntax, createTvs({ merge: twMerge }) for Tailwind
   projects, cn utility, and VariantProps type helper for component prop types.
   Preempts: calling .variants() twice (runtime throw), wiring twMerge outside the factory.
 type: lifecycle
-library: "@ntatoud/tvs"
+library: "tvs"
 library_version: "0.1.0"
 sources:
   - "ntatoud/tvs:packages/tvs/src/index.ts"
   - "ntatoud/tvs:packages/tvs/README.md"
 ---
 
-# Getting Started with @ntatoud/tvs
+# Getting Started with tvs
 
 ## 1. Setup
 
@@ -22,20 +22,20 @@ Install the package — no peer dependencies required.
 
 ```sh
 # npm
-npm install @ntatoud/tvs
+npm install tvs
 
 # pnpm
-pnpm add @ntatoud/tvs
+pnpm add tvs
 
 # yarn
-yarn add @ntatoud/tvs
+yarn add tvs
 ```
 
 Minimum viable example — a typed button component:
 
 ```ts
 // button.ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 export const button = tvs("btn")
   .variants({
@@ -68,7 +68,7 @@ button({ size: "sm", intent: "danger" });
 `.compound()` applies extra classes when multiple variant conditions are met simultaneously.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({
@@ -90,7 +90,7 @@ button({ size: "lg", color: "red" });
 Both `class` and `className` are accepted. They support clsx syntax: strings, arrays, objects, and functions.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const badge = tvs("badge").variants({ color: { green: "bg-green-500", gray: "bg-gray-300" } });
 
@@ -106,7 +106,7 @@ badge({ color: "gray", className: ["mt-2", { hidden: false, block: true }] });
 Pass a plain string instead of a `{ true: "...", false: "..." }` map to get an opt-in boolean prop.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const input = tvs("input border").variants({
   disabled: "opacity-50 cursor-not-allowed",
@@ -126,7 +126,7 @@ Create a project-scoped `tvs` and `cn` that pipe every output through `twMerge`.
 
 ```ts
 // lib/tvs.ts
-import { createTvs } from "@ntatoud/tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 export const { tvs, cn } = createTvs({ merge: twMerge });
@@ -135,7 +135,7 @@ export const { tvs, cn } = createTvs({ merge: twMerge });
 ```ts
 // components/card.ts
 import { tvs, cn } from "@/lib/tvs";
-import type { VariantProps } from "@ntatoud/tvs";
+import type { VariantProps } from "tvs";
 
 export const card = tvs("p-4 rounded-lg")
   .variants({ shadow: { sm: "shadow-sm", lg: "shadow-lg" } })
@@ -156,7 +156,7 @@ const classes = cn("p-4", ["rounded", { "border border-gray-200": true }]);
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn")
   .variants({ size: { sm: "text-sm", lg: "text-lg" } })
@@ -166,7 +166,7 @@ const button = tvs("btn")
 **Correct**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn").variants({
   size: { sm: "text-sm", lg: "text-lg" },
@@ -185,7 +185,7 @@ Source: `ntatoud/tvs:packages/tvs/src/index.ts`
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 const button = tvs("btn").variants({ size: { sm: "p-1", lg: "p-4" } });
@@ -197,7 +197,7 @@ const classes = twMerge(button({ size: "sm", class: "p-2" }));
 **Correct**
 
 ```ts
-import { createTvs } from "@ntatoud/tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 export const { tvs, cn } = createTvs({ merge: twMerge });
@@ -219,7 +219,7 @@ Source: `ntatoud/tvs:packages/tvs/src/index.ts`
 **Wrong**
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const button = tvs("btn").variants({ intent: { primary: "bg-blue-600" } });
 
@@ -234,7 +234,7 @@ function Button(props: ButtonProps) {
 **Correct**
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const button = tvs("btn").variants({ intent: { primary: "bg-blue-600" } });
 

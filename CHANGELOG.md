@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `@ntatoud/tvs` will be documented in this file.
+All notable changes to `tvs` will be documented in this file.
 
 ## [0.2.0] - 2026-04-12
 
@@ -19,4 +19,4 @@ All notable changes to `@ntatoud/tvs` will be documented in this file.
 - MIT License
 - Type-safe class variance builder as a maintained CVA replacement
 - Benchmark package comparing batched CVA vs tvs performance
-- Published as `@ntatoud/tvs` on npm
+- Published as `tvs` on npm

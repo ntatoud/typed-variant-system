@@ -6,7 +6,7 @@ description: >
   class/className ClassValue inputs, optional vs required variant inference, and
   compound-rule key coercion.
 type: core
-library: "@ntatoud/tvs"
+library: "tvs"
 library_version: "0.1.0"
 requires:
   - tvs-getting-started
@@ -20,7 +20,7 @@ This skill builds on tvs-getting-started. Read it first for foundational concept
 ## Setup
 
 ```ts
-import { tvs, type VariantProps, type ClassValue } from "@ntatoud/tvs";
+import { tvs, type VariantProps, type ClassValue } from "tvs";
 
 const buttonVariants = tvs("btn")
   .variants({
@@ -41,7 +41,7 @@ type ButtonProps = VariantProps<typeof buttonVariants>;
 Pass an object of string keys to string values. Each key becomes a prop; each value becomes the class applied when that key is selected.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const badge = tvs("badge").variants({
   size: {
@@ -65,7 +65,7 @@ All variant keys are required unless covered by `.defaults()`.
 When a variant value is a plain string instead of an object, the prop becomes `boolean`. The string is applied when the prop is `true`; nothing is applied when it is `false` or `undefined`.
 
 ```ts
-import { tvs } from "@ntatoud/tvs";
+import { tvs } from "tvs";
 
 const btn = tvs("btn").variants({
   disabled: "opacity-50 pointer-events-none",
@@ -84,7 +84,7 @@ Internally the shorthand `"opacity-50 pointer-events-none"` is stored as `{ true
 Call `.defaults()` with a partial map of variant keys to their default values. Variants covered by a default become optional in the inferred props type; uncovered variants remain required.
 
 ```ts
-import { tvs, type VariantProps } from "@ntatoud/tvs";
+import { tvs, type VariantProps } from "tvs";
 
 const chip = tvs("chip")
   .variants({
@@ -106,7 +106,7 @@ chip({ size: "lg", color: "green" }); // "chip text-base bg-green-100"
 Both `class` and `className` props accept a `ClassValue`: a string, number, boolean, null, undefined, an array of `ClassValue`, or a `Record<string, unknown>` where truthy values include the key as a class. `className` also accepts a render-prop function returning `ClassValue`.
 
 ```ts
-import { tvs, type ClassValue } from "@ntatoud/tvs";
+import { tvs, type ClassValue } from "tvs";
 
 const btn = tvs("btn").variants({ disabled: "opacity-50" });
 
@@ -200,7 +200,7 @@ The `toKey` coercion applies only to incoming prop values, not to the keys writt
 
 ```ts
 // Wrong — class is stripped from VariantProps
-import { type VariantProps } from "@ntatoud/tvs";
+import { type VariantProps } from "tvs";
 
 const btn = tvs("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
 type BtnProps = VariantProps<typeof btn> & { onClick: () => void };
@@ -209,7 +209,7 @@ type BtnProps = VariantProps<typeof btn> & { onClick: () => void };
 
 ```ts
 // Correct — add ClassValue explicitly when the component needs to accept extra classes
-import { tvs, type VariantProps, type ClassValue } from "@ntatoud/tvs";
+import { tvs, type VariantProps, type ClassValue } from "tvs";
 
 const btn = tvs("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
 type BtnProps = VariantProps<typeof btn> & { class?: ClassValue; onClick: () => void };

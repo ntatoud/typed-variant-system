@@ -1,13 +1,13 @@
 ---
 name: tvs-shadcn-integration
 description: >
-  Integrate @ntatoud/tvs into a shadcn/ui project — replaces class-variance-authority (CVA)
+  Integrate tvs into a shadcn/ui project — replaces class-variance-authority (CVA)
   and clsx+twMerge cn helper with a single createTvs({ merge: twMerge }) instance.
   Covers lib/tvs.ts shared factory pattern, swapping cva/VariantProps imports, replacing
   cn from @/lib/utils, tailwind-merge deduplication via MergeFn, and removing clsx dependency.
   Preempts: per-component createStyra instances, double-merge with twMerge, keeping clsx after migration.
 type: composition
-library: "@ntatoud/tvs"
+library: "tvs"
 library_version: "0.1.0"
 requires:
   - tvs-getting-started
@@ -16,7 +16,7 @@ sources:
   - "ntatoud/tvs:packages/tvs/README.md"
 ---
 
-# Integrating @ntatoud/tvs with shadcn/ui
+# Integrating tvs with shadcn/ui
 
 This skill builds on tvs-getting-started. Read it first for foundational concepts.
 
@@ -26,11 +26,11 @@ Create a single shared `lib/tvs.ts` file. Every component in the project imports
 
 ```ts
 // lib/tvs.ts
-import { createTvs } from "@ntatoud/tvs";
+import { createTvs } from "tvs";
 import { twMerge } from "tailwind-merge";
 
 export const { tvs, cn } = createTvs({ merge: twMerge });
-export type { VariantProps } from "@ntatoud/tvs";
+export type { VariantProps } from "tvs";
 ```
 
 Install `tailwind-merge` if not already present:
@@ -164,7 +164,7 @@ No call-site changes are required. `cn` from tvs accepts the same `ClassValue[]`
 
 ```ts
 // WRONG — components/ui/button.tsx
-import { createTvs } from "@ntatoud/tvs"
+import { createTvs } from "tvs"
 import { twMerge } from "tailwind-merge"
 
 const { tvs, cn } = createTvs({ merge: twMerge }) // new instance every file
