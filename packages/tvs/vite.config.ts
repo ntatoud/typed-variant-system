@@ -1,13 +1,7 @@
-import { defineConfig as definePackConfig } from "vite-plus/pack";
+import tsdownConfig from "./tsdown.config.js";
+
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
-  pack: definePackConfig({
-    dts: true,
-    exports: true,
-    attw: {
-      enabled: true,
-      profile: "esm-only",
-    },
-  }),
+  pack: tsdownConfig,
 });
