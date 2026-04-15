@@ -10,6 +10,7 @@
     "prepare": "vp config"
   },
   "devDependencies": {
+    "oxlint-plugin-tvs": "workspace:*",
     "vite-plus": "catalog:"
   },
   "engines": {

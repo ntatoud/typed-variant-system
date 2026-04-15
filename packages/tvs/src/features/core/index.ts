@@ -1,6 +1,5 @@
 import { joinClassValues, makeBuilder } from "../internal-core/index.js";
 import type { ClassValue, CompoundRule, Not, TvsBuilder, VariantMap } from "./types.js";
-
 export type {
   ClassValue,
   CompoundRule,
