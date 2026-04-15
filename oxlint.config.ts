@@ -1,4 +1,4 @@
-import { defineConfig, recommended as tvsRecommended } from "oxlint-plugin-tvs";
+import { defineConfig, recommended as tvsRecommended } from "oxlint-plugin-typed-variant-system";
 
 export default defineConfig({
   options: {

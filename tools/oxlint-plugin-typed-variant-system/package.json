@@ -1,5 +1,5 @@
 {
-  "name": "oxlint-plugin-tvs",
+  "name": "oxlint-plugin-typed-variant-system",
   "version": "0.0.0",
   "private": true,
   "type": "module",

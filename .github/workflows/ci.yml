@@ -18,7 +18,7 @@ jobs:
           cache: true
 
       - name: 🏗️ Build packages
-        run: vp run tvs#build
+        run: vp run typed-variant-system#build
 
       - name: 🧹 Lint & format
         run: vp check
@@ -51,18 +51,18 @@ jobs:
         with:
           cache: true
 
-      - name: 🏗️ Build tvs
-        run: vp run tvs#build
+      - name: 🏗️ Build typed-variant-system
+        run: vp run typed-variant-system#build
 
       - name: 📐 Check bundle size (+ tree-shaking)
-        working-directory: packages/tvs
+        working-directory: packages/typed-variant-system
         run: vp exec size-limit --json
 
       # size-limit uses esbuild to bundle entries, which strips .d.mts files
       # down to ~13 B (type declarations are compile-time only). Raw file
       # size must be checked separately.
       - name: 🗂️ Check types size
-        working-directory: packages/tvs
+        working-directory: packages/typed-variant-system
         run: |
           limit=10240
           size=$(wc -c < dist/index.d.mts)

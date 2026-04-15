@@ -1,5 +1,5 @@
 {
-  "name": "tvs",
+  "name": "typed-variant-system",
   "version": "0.4.0",
   "description": "Type-safe class variance builder. A maintained, feature-rich CVA replacement.",
   "keywords": [
@@ -9,14 +9,14 @@
     "typescript",
     "variants"
   ],
-  "homepage": "https://github.com/ntatoud/tvs#readme",
+  "homepage": "https://github.com/ntatoud/typed-variant-system#readme",
   "bugs": {
-    "url": "https://github.com/ntatoud/tvs/issues"
+    "url": "https://github.com/ntatoud/typed-variant-system/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ntatoud/tvs.git"
+    "url": "git+https://github.com/ntatoud/typed-variant-system.git"
   },
   "files": [
     "dist"

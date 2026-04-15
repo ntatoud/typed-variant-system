@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createRecipe, type RecipeClasses } from "tvs";
+import { createRecipe, type RecipeClasses } from "typed-variant-system";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

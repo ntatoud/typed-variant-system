@@ -7,7 +7,7 @@ export function defineConfig<T extends OxlintConfig>(config: T): T {
 import path from "node:path";
 
 /**
- * Oxlint JS plugin for the tvs package.
+ * Oxlint JS plugin for the typed-variant-system package.
  *
  * Enforces a configurable feature dependency tree so that cross-feature
  * imports stay intentional. Each feature can declare exactly which other
@@ -16,14 +16,14 @@ import path from "node:path";
  *
  * Quickstart — extend the recommended config in oxlint.config.ts:
  *
- *   import { recommended as tvsRecommended } from "oxlint-plugin-tvs";
+ *   import { recommended as tvsRecommended } from "oxlint-plugin-typed-variant-system";
  *
  *   export default defineConfig({
  *     extends: [tvsRecommended],
  *   });
  *
  * The recommended config registers the plugin and enables the rule with
- * the default tvs feature tree. Override `tree` in the rule options if
+ * the default typed-variant-system feature tree. Override `tree` in the rule options if
  * you need a different configuration.
  *
  * Features whose names are not keys in `tree` are unrestricted.
@@ -63,7 +63,7 @@ interface ImportDeclarationNode {
  * or null if the path is not under a features directory.
  *
  * Example:
- *   filePath    = "/repo/packages/tvs/src/features/core/index.ts"
+ *   filePath    = "/repo/packages/typed-variant-system/src/features/core/index.ts"
  *   featuresDir = "src/features"
  *   → "core"
  */
@@ -149,19 +149,19 @@ const plugin = {
 export default plugin;
 
 /** Ready-made jsPlugins entry for oxlint.config.ts. */
-export const jsPlugin = { name: "tvs", specifier: "oxlint-plugin-tvs" } as const;
+export const jsPlugin = { name: "tvs", specifier: "oxlint-plugin-typed-variant-system" } as const;
 
 /**
- * Recommended oxlint config for the tvs package.
+ * Recommended oxlint config for the typed-variant-system package.
  *
  * Registers the plugin and enables `no-restricted-feature-imports` with the
- * default feature dependency tree scoped to `packages/tvs/src`.
+ * default feature dependency tree scoped to `packages/typed-variant-system/src`.
  */
 export const recommended = {
   jsPlugins: [jsPlugin],
   overrides: [
     {
-      files: ["packages/tvs/src/**"],
+      files: ["packages/typed-variant-system/src/**"],
       rules: {
         "tvs/no-restricted-feature-imports": [
           "error",
