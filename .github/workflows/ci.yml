@@ -57,3 +57,15 @@ jobs:
       - name: 📐 Check bundle size (+ tree-shaking)
         working-directory: packages/tvs
         run: vp exec size-limit --json
+
+      - name: 🗂️ Check types size
+        working-directory: packages/tvs
+        run: |
+          limit=10240
+          size=$(wc -c < dist/index.d.mts)
+          echo "Types size: ${size} B (limit: ${limit} B)"
+          if [ "$size" -gt "$limit" ]; then
+            echo "❌ Types exceeded limit: ${size} B > ${limit} B"
+            exit 1
+          fi
+          echo "✅ Types within limit"
