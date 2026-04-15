@@ -1,4 +1,5 @@
-import { makeBuilder } from "../core/index.js";
+import { makeBuilder } from "../internal-core/index.js";
+import { matchesCompound } from "../core/index.js";
 import type { TvsBuilder, VariantMap } from "../core/types.js";
 
 import type { Recipe, RecipeMap, VariantMapOf } from "./types.js";
@@ -23,6 +24,7 @@ export function createRecipe<const S extends RecipeMap>(shape: S): Recipe<S> {
         [],
         undefined,
         true,
+        matchesCompound,
       ) as unknown as TvsBuilder<VariantMapOf<S>, Record<never, never>>;
     },
   };
