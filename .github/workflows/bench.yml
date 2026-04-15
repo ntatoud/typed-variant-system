@@ -53,18 +53,24 @@ jobs:
             }
 
             let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
-            md += '| Scenario | Tool | avg | p50 | p99 | M ops/s |\n';
-            md += '|---|---|---:|---:|---:|---:|\n';
+            md += '| Scenario | Tool | M ops/s |\n';
+            md += '|---|---|---:|\n';
+
+            const verdicts = [];
 
             for (const section of sections) {
               for (let i = 0; i < section.rows.length; i++) {
-                const { tool, avg, p50, p99, mops } = section.rows[i];
+                const { tool, mops } = section.rows[i];
                 const scenarioCell = i === 0 ? `**${section.title}**` : '';
-                md += `| ${scenarioCell} | \`${tool}\` | ${avg}ns | ${p50}ns | ${p99}ns | ${mops} |\n`;
+                md += `| ${scenarioCell} | \`${tool}\` | ${mops} |\n`;
               }
               if (section.verdict) {
-                md += `| | _${section.verdict}_ | | | | |\n`;
+                verdicts.push(`**${section.title}**: **${section.verdict}**`);
               }
+            }
+
+            if (verdicts.length) {
+              md += '\n' + verdicts.join('\\\n');
             }
 
             md += '\n> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
