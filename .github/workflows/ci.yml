@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    name: Check & Test
+    name: 🔍 Check & Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,15 +17,17 @@ jobs:
         with:
           cache: true
 
-      - name: Build packages
+      - name: 🏗️ Build packages
         run: vp run tvs#build
 
-      - run: vp check
+      - name: 🧹 Lint & format
+        run: vp check
 
-      - run: vp test
+      - name: 🧪 Test
+        run: vp test
 
   build:
-    name: Build
+    name: 📦 Build
     runs-on: ubuntu-latest
     needs: validate
     steps:
@@ -35,10 +37,11 @@ jobs:
         with:
           cache: true
 
-      - run: vp run -r build
+      - name: 🏗️ Build all packages
+        run: vp run -r build
 
   bundle:
-    name: Bundle (size + tree-shaking)
+    name: 📏 Bundle (size + tree-shaking)
     runs-on: ubuntu-latest
     needs: validate
     steps:
@@ -48,9 +51,9 @@ jobs:
         with:
           cache: true
 
-      - name: Build tvs
+      - name: 🏗️ Build tvs
         run: vp run tvs#build
 
-      - name: Check bundle size (+ tree-shaking)
+      - name: 📐 Check bundle size (+ tree-shaking)
         working-directory: packages/tvs
         run: vp exec size-limit --json
