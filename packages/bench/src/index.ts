@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { cn, createRecipe, tvs } from "tvs";
+import { cn, createRecipe, tvs } from "typed-variant-system";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 

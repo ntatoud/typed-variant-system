@@ -17,8 +17,8 @@
     "react-dom": "catalog:",
     "shadcn": "catalog:",
     "tailwind-merge": "catalog:",
-    "tvs": "workspace:*",
-    "tw-animate-css": "catalog:"
+    "tw-animate-css": "catalog:",
+    "typed-variant-system": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:",

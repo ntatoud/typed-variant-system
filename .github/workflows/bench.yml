@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "packages/tvs/src/**"
+      - "packages/typed-variant-system/src/**"
       - "packages/bench/src/**"
 
 permissions:
@@ -22,8 +22,8 @@ jobs:
         with:
           cache: true
 
-      - name: 🏗️ Build tvs
-        run: vp run tvs#build
+      - name: 🏗️ Build typed-variant-system
+        run: vp run typed-variant-system#build
 
       - name: 🏎️ Run benchmarks
         run: vp run bench#bench | tee bench-output.txt
@@ -88,7 +88,7 @@ jobs:
               md += '</details>\n\n';
             }
 
-            md += '_Scenarios 1–9: tvs vs cva — Scenarios 10–13: recipe vs tvs_\n\n';
+            md += '_Scenarios 1–9: typed-variant-system vs cva — Scenarios 10–13: recipe vs typed-variant-system_\n\n';
             md += '> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
 
             const { data: comments } = await github.rest.issues.listComments({

@@ -1,6 +1,6 @@
 # bench
 
-Micro-benchmark comparing `tvs` vs `cva@1.0.0-beta.4` and `recipe` vs `tvs` across multiple scenarios.
+Micro-benchmark comparing `typed-variant-system` vs `cva@1.0.0-beta.4` and `recipe` vs `typed-variant-system` across multiple scenarios.
 
 ## Methodology
 
@@ -28,7 +28,7 @@ vp exec tsx src/index.ts
 
 ### recipe vs tvs
 
-Compares a recipe-built builder (via `createRecipe().implement()`) against an equivalent `tvs` builder with the same variant structure. Measures call-time overhead — recipe builders are stamped once at module load, so the comparison is fair.
+Compares a recipe-built builder (via `createRecipe().implement()`) against an equivalent `typed-variant-system` builder with the same variant structure. Measures call-time overhead — recipe builders are stamped once at module load, so the comparison is fair.
 
 10. **recipe: variants only** — no base class, size + color variants
 11. **recipe: variants + defaults** — size/color/disabled with a default
@@ -37,4 +37,4 @@ Compares a recipe-built builder (via `createRecipe().implement()`) against an eq
 
 ## CI
 
-The benchmark runs automatically on pull requests that touch `packages/tvs/src/` or `packages/bench/src/`, and posts results as a PR comment.
+The benchmark runs automatically on pull requests that touch `packages/typed-variant-system/src/` or `packages/bench/src/`, and posts results as a PR comment.

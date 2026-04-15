@@ -1,5 +1,5 @@
 {
-  "name": "tvs-monorepo",
+  "name": "typed-variant-system-monorepo",
   "version": "0.0.0",
   "private": true,
   "author": "Noe TATOUD <noe.tatoud@gmail.com>",
@@ -10,7 +10,7 @@
     "prepare": "vp config"
   },
   "devDependencies": {
-    "oxlint-plugin-tvs": "workspace:*",
+    "oxlint-plugin-typed-variant-system": "workspace:*",
     "vite-plus": "catalog:"
   },
   "engines": {

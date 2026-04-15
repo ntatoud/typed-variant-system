@@ -7,7 +7,7 @@ import type { ClassValue, TvsBuilder, TvsOptions } from "../core/types.js";
  *
  * @example
  * ```ts
- * import { createTvs } from 'tvs'
+ * import { createTvs } from 'typed-variant-system'
  * import { twMerge } from 'tailwind-merge'
  *
  * export const { tvs, cn } = createTvs({ merge: twMerge })

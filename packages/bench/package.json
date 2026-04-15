@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "cva": "1.0.0-beta.4",
-    "tvs": "workspace:*"
+    "typed-variant-system": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
