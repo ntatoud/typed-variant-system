@@ -31,11 +31,14 @@
     "build": "vp pack",
     "dev": "vp pack --watch",
     "test": "vp test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "size": "size-limit"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "catalog:",
+    "@size-limit/preset-small-lib": "^11.2.0",
     "@types/node": "^25.5.0",
+    "size-limit": "^11.2.0",
     "typescript": "^6.0.2",
     "vite-plus": "catalog:",
     "vitest": "catalog:"

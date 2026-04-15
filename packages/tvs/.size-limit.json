@@ -1,0 +1,25 @@
+[
+  {
+    "name": "tvs (full)",
+    "path": "./dist/index.mjs",
+    "limit": "3 kB"
+  },
+  {
+    "name": "tvs (tree-shaken: tvs)",
+    "path": "./dist/index.mjs",
+    "import": "{ tvs }",
+    "limit": "2 kB"
+  },
+  {
+    "name": "tvs (tree-shaken: createRecipe)",
+    "path": "./dist/index.mjs",
+    "import": "{ createRecipe }",
+    "limit": "2 kB"
+  },
+  {
+    "name": "tvs (tree-shaken: createTvs)",
+    "path": "./dist/index.mjs",
+    "import": "{ createTvs }",
+    "limit": "2 kB"
+  }
+]
