@@ -52,23 +52,38 @@ jobs:
               }
             }
 
-            let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
-
-            for (const section of sections) {
-              md += `### ${section.title}\n\n`;
-              md += '| Tool | M ops/s |\n';
-              md += '|---|---:|\n';
-              for (const { tool, mops } of section.rows) {
-                md += `| \`${tool}\` | ${mops} |\n`;
+            function renderSection({ title, rows, verdict }) {
+              let s = `### ${title}\n\n`;
+              s += '| Tool | M ops/s |\n';
+              s += '|---|---:|\n';
+              for (const { tool, mops } of rows) {
+                s += `| \`${tool}\` | ${mops} |\n`;
               }
-              if (section.verdict) {
-                const emphasized = section.verdict.replace(/([\d.]+x (?:faster|slower))/, '**$1**');
-                md += `\n${emphasized}\n`;
+              if (verdict) {
+                const emphasized = verdict.replace(/([\d.]+x (?:faster|slower))/, '**$1**');
+                s += `\n${emphasized}\n`;
               }
-              md += '\n';
+              return s;
             }
 
-            md += '\n> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
+            const faster = sections.filter(s => s.verdict && !s.verdict.includes('slower'));
+            const slower = sections.filter(s => s.verdict && s.verdict.includes('slower'));
+
+            let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
+
+            if (faster.length) {
+              md += `<details>\n<summary>✅ tvs is faster (${faster.length})</summary>\n\n`;
+              for (const section of faster) md += renderSection(section) + '\n';
+              md += '</details>\n\n';
+            }
+
+            if (slower.length) {
+              md += `<details>\n<summary>❌ tvs is slower (${slower.length})</summary>\n\n`;
+              for (const section of slower) md += renderSection(section) + '\n';
+              md += '</details>\n\n';
+            }
+
+            md += '> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
