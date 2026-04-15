@@ -84,6 +84,48 @@ import { cn } from "tvs";
 cn("px-4", condition && "py-2", ["rounded", "text-sm"]); // 'px-4 py-2 rounded text-sm'
 ```
 
+### Recipes
+
+Recipes are reusable variant schemas — they define the structure (variant keys and their possible values) with no class names attached. Classes are provided separately when stamping a builder, so the same recipe can be reused across components with different styles.
+
+**Create a recipe:**
+
+```ts
+import { createRecipe } from "tvs";
+
+const sizeRecipe = createRecipe({ size: ["sm", "md", "lg"] });
+const intentRecipe = createRecipe({ intent: ["primary", "secondary", "destructive"] });
+```
+
+**Extend recipes** to combine their variant keys (later recipe wins on conflicts):
+
+```ts
+const buttonRecipe = sizeRecipe.extend(intentRecipe);
+```
+
+**Create a builder** with `.implement(classes)`. TypeScript enforces that every declared value is covered:
+
+```ts
+const buttonVariants = sizeRecipe.extend(intentRecipe).implement({
+  size: { sm: "h-8 px-3 text-xs", md: "h-9 px-4 text-sm", lg: "h-11 px-6 text-base" },
+  intent: {
+    primary: "bg-blue-500 text-white",
+    secondary: "bg-gray-100 text-gray-900",
+    destructive: "bg-red-500 text-white",
+  },
+});
+
+buttonVariants({ size: "md", intent: "primary" }); // 'h-9 px-4 text-sm bg-blue-500 text-white'
+```
+
+Pass a base class via the `class` prop when needed:
+
+```ts
+buttonVariants({ size: "md", intent: "primary", class: "btn rounded-md" });
+```
+
+All builder methods (`.defaults()`, `.compound()`) work normally after `.implement()`.
+
 ### VariantProps
 
 Extract variant prop types for use in component definitions:

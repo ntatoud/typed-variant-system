@@ -4,10 +4,16 @@ import type {
   DefaultsOf,
   MergeFn,
   Not,
+  Recipe,
   TvsBuilder,
   TvsOptions,
   VariantMap,
 } from "./types.js";
+
+type RecipeMap = Record<string, readonly string[]>;
+type VariantMapOf<S extends RecipeMap> = {
+  [K in keyof S]: Record<S[K][number], string>;
+};
 
 function matchesCompound<V extends VariantMap>(
   rule: CompoundRule<V>,
@@ -210,8 +216,56 @@ export type {
   VariantMap,
   CompoundRule,
   InferProps,
+  Recipe,
+  RecipeClasses,
   VariantProps,
 } from "./types.js";
+
+/**
+ * Create a reusable shape — a pure variant schema (no class names) that can be
+ * extended with other shapes and stamped onto any `tvs` builder via `.from(shape, classes)`.
+ *
+ * @example
+ * ```ts
+ * const sizeRecipe = createRecipe({ size: ["sm", "md", "lg"] });
+ * const intentRecipe = createRecipe({ intent: ["primary", "secondary"] });
+ *
+ * // Use .implement() to create a builder directly from a shape:
+ * const buttonVariants = sizeRecipe.implement({
+ *   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+ * });
+ *
+ * // Chain .extend() before .implement() to combine shapes:
+ * const buttonVariants = sizeRecipe.extend(intentRecipe).implement({
+ *   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+ *   intent: { primary: "bg-blue-500", secondary: "bg-gray-500" },
+ * });
+ *
+ * // Or use .from() on a tvs builder for a custom base class:
+ * const button = tvs("btn").from(sizeRecipe.extend(intentRecipe), {
+ *   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+ *   intent: { primary: "bg-blue-500", secondary: "bg-gray-500" },
+ * });
+ * ```
+ */
+export function createRecipe<const S extends RecipeMap>(shape: S): Recipe<S> {
+  return {
+    _recipe: shape,
+    extend<S2 extends RecipeMap>(other: Recipe<S2>): Recipe<Omit<S, keyof S2> & S2> {
+      return createRecipe({ ...shape, ...other._recipe } as Omit<S, keyof S2> & S2);
+    },
+    implement(classes: VariantMapOf<S>) {
+      return makeBuilder(
+        "",
+        classes as unknown as VariantMap,
+        {} as Record<never, never>,
+        [],
+        undefined,
+        true,
+      ) as unknown as TvsBuilder<VariantMapOf<S>, Record<never, never>>;
+    },
+  };
+}
 
 /**
  * Create a configured `tvs` factory.

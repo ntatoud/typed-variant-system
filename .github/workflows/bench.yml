@@ -3,13 +3,18 @@ name: Benchmark
 on:
   pull_request:
     branches: [main]
+    paths:
+      - "packages/tvs/src/**"
+      - "packages/bench/src/**"
+
+permissions:
+  pull-requests: write
 
 jobs:
   bench:
     name: Benchmark
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +46,7 @@ jobs:
                 sections.push(current);
                 continue;
               }
-              const rowMatch = line.match(/^(cva|tvs)\s+avg=\s*([\d.]+)ns\s+p50=\s*([\d.]+)ns\s+p99=\s*([\d.]+)ns\s+([\d.]+)\s+M ops\/s/);
+              const rowMatch = line.match(/^(cva|tvs|recipe)\s+avg=\s*([\d.]+)ns\s+p50=\s*([\d.]+)ns\s+p99=\s*([\d.]+)ns\s+([\d.]+)\s+M ops\/s/);
               if (rowMatch && current) {
                 current.rows.push({ tool: rowMatch[1], avg: rowMatch[2], p50: rowMatch[3], p99: rowMatch[4], mops: rowMatch[5] });
                 continue;
@@ -72,17 +77,18 @@ jobs:
             let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
 
             if (faster.length) {
-              md += `<details>\n<summary>✅ tvs is faster (${faster.length})</summary>\n\n`;
+              md += `<details>\n<summary>✅ Faster (${faster.length})</summary>\n\n`;
               for (const section of faster) md += renderSection(section) + '\n';
               md += '</details>\n\n';
             }
 
             if (slower.length) {
-              md += `<details>\n<summary>❌ tvs is slower (${slower.length})</summary>\n\n`;
+              md += `<details>\n<summary>⚠️ Slower (${slower.length})</summary>\n\n`;
               for (const section of slower) md += renderSection(section) + '\n';
               md += '</details>\n\n';
             }
 
+            md += '_Scenarios 1–9: tvs vs cva — Scenarios 10–13: recipe vs tvs_\n\n';
             md += '> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
 
             const { data: comments } = await github.rest.issues.listComments({

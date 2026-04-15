@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { cn, tvs } from "tvs";
+import { cn, createRecipe, tvs } from "tvs";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
@@ -89,6 +89,16 @@ function compare(title: string, cvaFn: () => void, tvsFn: () => void) {
   );
 }
 
+function compareRecipe(title: string, tvsFn: () => void, recipeFn: () => void) {
+  console.log(`\n── ${title} ──`);
+  const tvsAvg = bench("tvs", tvsFn);
+  const recipeAvg = bench("recipe", recipeFn);
+  const ratio = tvsAvg / recipeAvg;
+  console.log(
+    `  → recipe is ${ratio >= 1 ? ratio.toFixed(2) + "x faster" : (1 / ratio).toFixed(2) + "x slower"} than tvs`,
+  );
+}
+
 compare(
   "1. base class only",
   () => cvaBase(),
@@ -149,4 +159,104 @@ compare(
   "9. cn: array+obj",
   () => ["btn", "mt-4", "font-bold"].join(" "),
   () => cn(["btn", "mt-4", { "font-bold": true, italic: false }]),
+);
+
+// ─── Recipe vs tvs ────────────────────────────────────────────────────────────
+// Each scenario compares a recipe-built builder against an equivalent tvs builder
+// with the same variant structure and defaults.
+
+// Scenario 10: recipe — variants only (no base class)
+const tvsVariantsOnly = tvs("").variants({
+  size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+  color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
+});
+
+const recipeVariantsOnly = createRecipe({
+  size: ["sm", "md", "lg"],
+  color: ["red", "blue", "green"],
+}).implement({
+  size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+  color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
+});
+
+compareRecipe(
+  "10. recipe: variants only",
+  () => tvsVariantsOnly({ size: "sm", color: "red" }),
+  () => recipeVariantsOnly({ size: "sm", color: "red" }),
+);
+
+// Scenario 11: recipe — variants + defaults
+const tvsWithDefaults = tvs("")
+  .variants({
+    size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+    color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
+    disabled: { yes: "opacity-50", no: "" },
+  })
+  .defaults({ size: "md" });
+
+const recipeWithDefaults = createRecipe({
+  size: ["sm", "md", "lg"],
+  color: ["red", "blue", "green"],
+  disabled: ["yes", "no"],
+})
+  .implement({
+    size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+    color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
+    disabled: { yes: "opacity-50", no: "" },
+  })
+  .defaults({ size: "md" });
+
+compareRecipe(
+  "11. recipe: variants + defaults",
+  () => tvsWithDefaults({ color: "red", disabled: "yes" }),
+  () => recipeWithDefaults({ color: "red", disabled: "yes" }),
+);
+
+// Scenario 12: recipe — variants + compound rules
+const tvsWithCompound = tvs("")
+  .variants({
+    size: { sm: "text-sm", md: "text-md" },
+    color: { red: "bg-red", blue: "bg-blue" },
+  })
+  .compound([
+    { size: "sm", color: "red", class: "ring-red" },
+    { size: "md", color: "blue", class: "ring-blue" },
+  ]);
+
+const recipeWithCompound = createRecipe({ size: ["sm", "md"], color: ["red", "blue"] })
+  .implement({
+    size: { sm: "text-sm", md: "text-md" },
+    color: { red: "bg-red", blue: "bg-blue" },
+  })
+  .compound([
+    { size: "sm", color: "red", class: "ring-red" },
+    { size: "md", color: "blue", class: "ring-blue" },
+  ]);
+
+compareRecipe(
+  "12. recipe: compound variants",
+  () => tvsWithCompound({ size: "sm", color: "red" }),
+  () => recipeWithCompound({ size: "sm", color: "red" }),
+);
+
+// Scenario 13: recipe — extended (two recipes fused)
+const tvsExtended = tvs("").variants({
+  size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+  color: { red: "bg-red", blue: "bg-blue" },
+  disabled: { yes: "opacity-50", no: "" },
+});
+
+const recipeExtended = createRecipe({ size: ["sm", "md", "lg"] })
+  .extend(createRecipe({ color: ["red", "blue"] }))
+  .extend(createRecipe({ disabled: ["yes", "no"] }))
+  .implement({
+    size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
+    color: { red: "bg-red", blue: "bg-blue" },
+    disabled: { yes: "opacity-50", no: "" },
+  });
+
+compareRecipe(
+  "13. recipe: extended (3 recipes)",
+  () => tvsExtended({ size: "sm", color: "red", disabled: "no" }),
+  () => recipeExtended({ size: "sm", color: "red", disabled: "no" }),
 );
