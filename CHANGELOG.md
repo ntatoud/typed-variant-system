@@ -1,13 +1,13 @@
 # Changelog
 
-All notable changes to `tvs` will be documented in this file.
+All notable changes to `typed-variant-system` will be documented in this file.
 
 ## [0.4.0] - 2026-04-15
 
 ### Added
 
 - Recipe system for reusable variant schemas ([#21](https://github.com/ntatoud/tvs/pull/21))
-- Oxlint/oxfmt configs and tvs feature boundary plugin ([#25](https://github.com/ntatoud/tvs/pull/25))
+- Oxlint/oxfmt configs and typed-variant-system feature boundary plugin ([#25](https://github.com/ntatoud/tvs/pull/25))
 
 ### Changed
 
@@ -22,7 +22,7 @@ All notable changes to `tvs` will be documented in this file.
 
 ### Changed
 
-- Rename package from `styra` to `tvs`
+- Rename package from `styra` to `typed-variant-system`
 - Remove `@ntatoud` scope prefix from package name
 
 ### Removed
@@ -45,5 +45,5 @@ All notable changes to `tvs` will be documented in this file.
 - `VariantProps` helper type export
 - MIT License
 - Type-safe class variance builder as a maintained CVA replacement
-- Benchmark package comparing batched CVA vs tvs performance
-- Published as `tvs` on npm
+- Benchmark package comparing batched CVA vs typed-variant-system performance
+- Published as `typed-variant-system` on npm

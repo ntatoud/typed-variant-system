@@ -1,4 +1,4 @@
-# tvs
+# typed-variant-system
 
 Type-safe class variance builder. A maintained, feature-rich CVA replacement.
 
@@ -7,7 +7,7 @@ Build component variants with a fluent API, full TypeScript inference, optional 
 ## Installation
 
 ```bash
-npm install tvs
+npm install typed-variant-system
 ```
 
 ## Usage
