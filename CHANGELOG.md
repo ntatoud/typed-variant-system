@@ -2,6 +2,12 @@
 
 All notable changes to `typed-variant-system` will be documented in this file.
 
+## [0.4.1] - 2026-04-15
+
+### Fixed
+
+- Fix empty npm publish by adding `prepublishOnly` build step
+
 ## [0.4.0] - 2026-04-15
 
 ### Added
