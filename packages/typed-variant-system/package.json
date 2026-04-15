@@ -1,6 +1,6 @@
 {
   "name": "typed-variant-system",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Type-safe class variance builder. A maintained, feature-rich CVA replacement.",
   "keywords": [
     "class-variance-authority",
@@ -28,6 +28,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "prepublishOnly": "vp pack",
     "build": "vp pack",
     "dev": "vp pack --watch",
     "test": "vp test",
