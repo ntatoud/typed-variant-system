@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { cn, createRecipe, createTvs, tvs } from "./index.js";
+import { cn, tvs } from "./index.js";
 
 describe("tvs — base class", () => {
   it("returns the base class when called with no variants", () => {
@@ -198,63 +198,6 @@ describe("tvs — clsx-like class syntax", () => {
   });
 });
 
-describe("recipes", () => {
-  it("implements a recipe with .implement()", () => {
-    const btn = createRecipe({ size: ["sm", "md"] }).implement({
-      size: { sm: "text-sm", md: "text-md" },
-    });
-    expect(btn({ size: "sm" })).toBe("text-sm");
-  });
-
-  it("extends two recipes and implements combined variants", () => {
-    const extended = createRecipe({ size: ["sm", "md"] })
-      .extend(createRecipe({ color: ["red", "blue"] }))
-      .implement({
-        size: { sm: "text-sm", md: "text-md" },
-        color: { red: "bg-red", blue: "bg-blue" },
-      });
-    expect(extended({ size: "sm", color: "red" })).toBe("text-sm bg-red");
-  });
-
-  it("extended recipe preserves variants from both sides", () => {
-    const btn = createRecipe({ x: ["on"] })
-      .extend(createRecipe({ y: ["on"] }))
-      .implement({ x: { on: "x-on" }, y: { on: "y-on" } });
-    expect(btn({ x: "on", y: "on" })).toBe("x-on y-on");
-  });
-
-  it("later .extend() overwrites duplicate variant keys", () => {
-    const btn = createRecipe({ size: ["sm"] })
-      .extend(createRecipe({ size: ["sm"] }))
-      .implement({ size: { sm: "b-sm" } });
-    expect(btn({ size: "sm" })).toBe("b-sm");
-  });
-
-  it(".implement() supports .defaults()", () => {
-    const btn = createRecipe({ size: ["sm", "md"] })
-      .implement({ size: { sm: "text-sm", md: "text-md" } })
-      .defaults({ size: "md" });
-    expect(btn({})).toBe("text-md");
-  });
-
-  it(".implement() supports .compound()", () => {
-    const btn = createRecipe({ size: ["sm", "md"], color: ["red", "blue"] })
-      .implement({
-        size: { sm: "text-sm", md: "text-md" },
-        color: { red: "bg-red", blue: "bg-blue" },
-      })
-      .compound([{ size: "sm", color: "red", class: "extra" }]);
-    expect(btn({ size: "sm", color: "red" })).toBe("text-sm bg-red extra");
-  });
-
-  it("base class can be added via the class prop", () => {
-    const btn = createRecipe({ size: ["sm", "md"] }).implement({
-      size: { sm: "text-sm", md: "text-md" },
-    });
-    expect(btn({ size: "sm", class: "btn" })).toBe("text-sm btn");
-  });
-});
-
 describe("cn — default instance", () => {
   it("joins strings", () => {
     expect(cn("foo", "bar")).toBe("foo bar");
@@ -266,42 +209,5 @@ describe("cn — default instance", () => {
 
   it("ignores falsy values", () => {
     expect(cn("foo", false, null, undefined, "bar")).toBe("foo bar");
-  });
-});
-
-describe("cn — with custom merge", () => {
-  it("passes resolved string through merge function", () => {
-    const calls: string[] = [];
-    const { cn: customCn } = createTvs({
-      merge: (...c) => {
-        calls.push(...c);
-        return c.join("|");
-      },
-    });
-    const result = customCn("foo", ["bar", { baz: true }]);
-    expect(result).toBe("foo bar baz");
-    expect(calls).toEqual(["foo bar baz"]);
-  });
-});
-
-describe("createTvs — custom merge", () => {
-  it("uses the provided merge function", () => {
-    const calls: string[][] = [];
-    const customMerge = (...classes: string[]) => {
-      calls.push(classes);
-      return classes.join("|");
-    };
-    const { tvs: customTvs } = createTvs({ merge: customMerge });
-    const btn = customTvs("btn").variants({ size: { sm: "text-sm" } });
-    const result = btn({ size: "sm" });
-    expect(result).toBe("btn|text-sm");
-    expect(calls).toHaveLength(1);
-  });
-
-  it("two instances with different merge functions are independent", () => {
-    const { tvs: a } = createTvs({ merge: (...c) => c.join("-") });
-    const { tvs: b } = createTvs({ merge: (...c) => c.join("_") });
-    expect(a("x").variants({ s: { y: "y" } })({ s: "y" })).toBe("x-y");
-    expect(b("x").variants({ s: { y: "y" } })({ s: "y" })).toBe("x_y");
   });
 });

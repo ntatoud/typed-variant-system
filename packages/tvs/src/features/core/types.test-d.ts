@@ -1,5 +1,6 @@
 import { describe, expectTypeOf, it } from "vite-plus/test";
-import { type VariantProps, tvs } from "./index.js";
+import { tvs } from "./index.js";
+import { type VariantProps } from "./types.js";
 
 describe("VariantProps", () => {
   const btn = tvs("btn")
