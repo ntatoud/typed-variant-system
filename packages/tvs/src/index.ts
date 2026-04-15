@@ -5,12 +5,15 @@ import type {
   MergeFn,
   Not,
   Recipe,
-  RecipeMap,
   TvsBuilder,
   TvsOptions,
   VariantMap,
-  VariantMapOf,
 } from "./types.js";
+
+type RecipeMap = Record<string, readonly string[]>;
+type VariantMapOf<S extends RecipeMap> = {
+  [K in keyof S]: Record<S[K][number], string>;
+};
 
 function matchesCompound<V extends VariantMap>(
   rule: CompoundRule<V>,
@@ -215,8 +218,6 @@ export type {
   InferProps,
   Recipe,
   RecipeClasses,
-  RecipeMap,
-  VariantMapOf,
   VariantProps,
 } from "./types.js";
 

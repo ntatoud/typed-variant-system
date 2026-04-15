@@ -74,10 +74,10 @@ export interface TvsOptions {
  * A pure variant schema: maps variant keys to their possible string values.
  * No class names — those are provided when stamping a builder with `.from()`.
  */
-export type RecipeMap = Record<string, readonly string[]>;
+type RecipeMap = Record<string, readonly string[]>;
 
 /** Derive a `VariantMap` from a `RecipeMap` (each key → `Record<value, string>`). */
-export type VariantMapOf<S extends RecipeMap> = {
+type VariantMapOf<S extends RecipeMap> = {
   [K in keyof S]: Record<S[K][number], string>;
 };
 
