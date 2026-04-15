@@ -59,11 +59,6 @@ overrides:
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 
-patchedDependencies:
-  vite-plus@0.1.16:
-    hash: 3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00
-    path: patches/vite-plus@0.1.16.patch
-
 importers:
 
   .:
@@ -73,7 +68,7 @@ importers:
         version: link:tools/oxlint-plugin-tvs
       vite-plus:
         specifier: 'catalog:'
-        version: 0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
+        version: 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
 
   apps/website:
     dependencies:
@@ -131,7 +126,7 @@ importers:
         version: '@voidzero-dev/vite-plus-core@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)'
       vite-plus:
         specifier: 'catalog:'
-        version: 0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(@voidzero-dev/vite-plus-core@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3))(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
+        version: 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(@voidzero-dev/vite-plus-core@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3))(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
 
   packages/bench:
     dependencies:
@@ -156,7 +151,7 @@ importers:
         version: 6.0.2
       vite-plus:
         specifier: 'catalog:'
-        version: 0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
+        version: 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
 
   packages/tvs:
     devDependencies:
@@ -177,7 +172,7 @@ importers:
         version: 6.0.2
       vite-plus:
         specifier: 'catalog:'
-        version: 0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
+        version: 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
         version: '@voidzero-dev/vite-plus-test@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)'
@@ -5770,7 +5765,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plus@0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(@voidzero-dev/vite-plus-core@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3))(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3):
+  vite-plus@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(@voidzero-dev/vite-plus-core@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3))(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3):
     dependencies:
       '@oxc-project/types': 0.123.0
       '@voidzero-dev/vite-plus-core': 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
@@ -5815,7 +5810,7 @@ snapshots:
       - vite
       - yaml
 
-  vite-plus@0.1.16(patch_hash=3f2fbf620b93d4dee697cb9fc81b4da6af8c06be247e26a07d3cb5d06e382b00)(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3):
+  vite-plus@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3):
     dependencies:
       '@oxc-project/types': 0.123.0
       '@voidzero-dev/vite-plus-core': 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
