@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { createRecipe, type RecipeClasses } from "tvs";
+import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -77,6 +79,146 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+// --- Recipes demo ---
+
+const sizeRecipe = createRecipe({ size: ["sm", "md", "lg"] });
+const intentRecipe = createRecipe({ intent: ["primary", "secondary", "destructive"] });
+const buttonRecipe = sizeRecipe.extend(intentRecipe);
+
+const sharedClasses: RecipeClasses<typeof buttonRecipe> = {
+  size: { sm: "h-8 px-3 text-xs", md: "h-9 px-4 text-sm", lg: "h-11 px-6 text-base" },
+  intent: {
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    destructive: "bg-destructive text-white hover:bg-destructive/90",
+  },
+};
+
+const recipeVariants = buttonRecipe
+  .implement(sharedClasses)
+  .defaults({ size: "md", intent: "primary" });
+
+type Size = "sm" | "md" | "lg";
+type Intent = "primary" | "secondary" | "destructive";
+
+function RecipesDemo() {
+  const [size, setSize] = useState<Size>("md");
+  const [intent, setIntent] = useState<Intent>("primary");
+
+  const sizes: Size[] = ["sm", "md", "lg"];
+  const intents: Intent[] = ["primary", "secondary", "destructive"];
+
+  const variantsClass = recipeVariants({ size, intent });
+  const buttonClass = recipeVariants({
+    size,
+    intent,
+    class:
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  });
+  const iconButtonClass = recipeVariants({
+    size: "sm",
+    intent,
+    class: "inline-flex items-center justify-center rounded-full font-medium transition-colors",
+  });
+
+  return (
+    <div className="w-full space-y-8">
+      {/* Controls */}
+      <div className="flex flex-wrap gap-6">
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+            size{" "}
+            <span className="text-xs normal-case font-normal opacity-60">— from sizeRecipe</span>
+          </p>
+          <div className="flex gap-2">
+            {sizes.map((s) => (
+              <button
+                key={s}
+                onClick={() => setSize(s)}
+                className={cn(
+                  "rounded border px-3 py-1 text-xs font-mono transition-colors",
+                  size === s
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border hover:bg-accent",
+                )}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+            intent{" "}
+            <span className="text-xs normal-case font-normal opacity-60">— from intentRecipe</span>
+          </p>
+          <div className="flex gap-2">
+            {intents.map((i) => (
+              <button
+                key={i}
+                onClick={() => setIntent(i)}
+                className={cn(
+                  "rounded border px-3 py-1 text-xs font-mono transition-colors",
+                  intent === i
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border hover:bg-accent",
+                )}
+              >
+                {i}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Live preview */}
+      <div className="space-y-4">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+          Live preview
+        </p>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-mono">recipeVariants</p>
+            <span className={variantsClass}>plain</span>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-mono">+ class (rounded-md)</p>
+            <button className={buttonClass}>button</button>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground font-mono">+ class (rounded-full)</p>
+            <button className={iconButtonClass}>⚡</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Resolved class output */}
+      <div className="space-y-3">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+          Resolved classes
+        </p>
+        <div className="space-y-2">
+          {[
+            { label: "recipeVariants({})", value: variantsClass },
+            { label: "+ class rounded-md", value: buttonClass },
+            { label: "+ class rounded-full", value: iconButtonClass },
+          ].map(({ label, value }) => (
+            <div key={label} className="rounded-md border bg-muted/40 p-3">
+              <p className="mb-1 text-xs font-mono text-muted-foreground">
+                {label}
+                {"({ size: "}"{size}
+                {","} intent: "{intent}" {"})"})
+              </p>
+              <p className="font-mono text-xs break-all">{value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function LoadingButtonDemo() {
   const [loading, setLoading] = useState(false);
@@ -441,6 +583,11 @@ export function Styleguide({ renderStart }: { renderStart: number }) {
                 <DropdownMenuItem>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </Section>
+
+          {/* Recipes */}
+          <Section title="Recipes">
+            <RecipesDemo />
           </Section>
 
           {/* Command */}
