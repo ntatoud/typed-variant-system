@@ -62,7 +62,8 @@ jobs:
                 md += `| \`${tool}\` | ${mops} |\n`;
               }
               if (section.verdict) {
-                md += `\n> **${section.verdict}**\n`;
+                const emphasized = section.verdict.replace(/([\d.]+x (?:faster|slower))/, '**$1**');
+                md += `\n${emphasized}\n`;
               }
               md += '\n';
             }
