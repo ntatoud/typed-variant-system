@@ -2,6 +2,18 @@
 
 All notable changes to `tvs` will be documented in this file.
 
+## [0.4.0] - 2026-04-15
+
+### Added
+
+- Recipe system for reusable variant schemas ([#21](https://github.com/ntatoud/tvs/pull/21))
+- Oxlint/oxfmt configs and tvs feature boundary plugin ([#25](https://github.com/ntatoud/tvs/pull/25))
+
+### Changed
+
+- Feature folders and treeshaking refactor ([#23](https://github.com/ntatoud/tvs/pull/23))
+- Size-limit and tree-shaking checks added to CI ([#24](https://github.com/ntatoud/tvs/pull/24))
+
 ## [0.3.0] - 2026-04-13
 
 ### Added
