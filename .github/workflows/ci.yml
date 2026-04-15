@@ -58,6 +58,9 @@ jobs:
         working-directory: packages/tvs
         run: vp exec size-limit --json
 
+      # size-limit uses esbuild to bundle entries, which strips .d.mts files
+      # down to ~13 B (type declarations are compile-time only). Raw file
+      # size must be checked separately.
       - name: 🗂️ Check types size
         working-directory: packages/tvs
         run: |
