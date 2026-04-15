@@ -63,6 +63,9 @@ importers:
 
   .:
     devDependencies:
+      oxlint-plugin-tvs:
+        specifier: workspace:*
+        version: link:tools/oxlint-plugin-tvs
       vite-plus:
         specifier: 'catalog:'
         version: 0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
@@ -173,6 +176,8 @@ importers:
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
         version: '@voidzero-dev/vite-plus-test@0.1.16(@arethetypeswrong/core@0.18.2)(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)'
+
+  tools/oxlint-plugin-tvs: {}
 
 packages:
 
