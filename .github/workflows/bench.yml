@@ -1,0 +1,110 @@
+name: Benchmark
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  bench:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          cache: true
+
+      - name: Build tvs
+        run: vp run tvs#build
+
+      - name: Run benchmarks
+        run: vp run bench#bench | tee bench-output.txt
+
+      - name: Post results as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('bench-output.txt', 'utf8');
+
+            const sections = [];
+            let current = null;
+
+            for (const raw of output.split('\n')) {
+              const line = raw.trim();
+              const sectionMatch = line.match(/^── (.+?) ──$/);
+              if (sectionMatch) {
+                current = { title: sectionMatch[1], rows: [], verdict: '' };
+                sections.push(current);
+                continue;
+              }
+              const rowMatch = line.match(/^(cva|tvs)\s+avg=\s*([\d.]+)ns\s+p50=\s*([\d.]+)ns\s+p99=\s*([\d.]+)ns\s+([\d.]+)\s+M ops\/s/);
+              if (rowMatch && current) {
+                current.rows.push({ tool: rowMatch[1], avg: rowMatch[2], p50: rowMatch[3], p99: rowMatch[4], mops: rowMatch[5] });
+                continue;
+              }
+              const verdictMatch = line.match(/^→ (.+)/);
+              if (verdictMatch && current) {
+                current.verdict = verdictMatch[1];
+              }
+            }
+
+            function renderSection({ title, rows, verdict }) {
+              let s = `### ${title}\n\n`;
+              s += '| Tool | M ops/s |\n';
+              s += '|---|---:|\n';
+              for (const { tool, mops } of rows) {
+                s += `| \`${tool}\` | ${mops} |\n`;
+              }
+              if (verdict) {
+                const emphasized = verdict.replace(/([\d.]+x (?:faster|slower))/, '**$1**');
+                s += `\n${emphasized}\n`;
+              }
+              return s;
+            }
+
+            const faster = sections.filter(s => s.verdict && !s.verdict.includes('slower'));
+            const slower = sections.filter(s => s.verdict && s.verdict.includes('slower'));
+
+            let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
+
+            if (faster.length) {
+              md += `<details>\n<summary>✅ tvs is faster (${faster.length})</summary>\n\n`;
+              for (const section of faster) md += renderSection(section) + '\n';
+              md += '</details>\n\n';
+            }
+
+            if (slower.length) {
+              md += `<details>\n<summary>❌ tvs is slower (${slower.length})</summary>\n\n`;
+              for (const section of slower) md += renderSection(section) + '\n';
+              md += '</details>\n\n';
+            }
+
+            md += '> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes('<!-- bench-results -->'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: md,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: md,
+              });
+            }
