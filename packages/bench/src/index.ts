@@ -1,6 +1,11 @@
+import { clsx } from "clsx";
 import { cva } from "cva";
+import { twMerge } from "tailwind-merge";
 import { cn, tvs } from "typed-variant-system";
+import { createTvs } from "typed-variant-system";
 import { recipe } from "typed-variant-system/recipe";
+
+const { cn: cnTw } = createTvs({ merge: twMerge });
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
@@ -80,13 +85,13 @@ function bench(label: string, fn: () => void, iterations = 200): number {
   return avg;
 }
 
-function compare(title: string, cvaFn: () => void, tvsFn: () => void) {
+function compare(title: string, aFn: () => void, bFn: () => void, aLabel = "cva", bLabel = "tvs") {
   console.log(`\n── ${title} ──`);
-  const cvaAvg = bench("cva", cvaFn);
-  const tvsAvg = bench("tvs", tvsFn);
-  const ratio = cvaAvg / tvsAvg;
+  const aAvg = bench(aLabel, aFn);
+  const bAvg = bench(bLabel, bFn);
+  const ratio = aAvg / bAvg;
   console.log(
-    `  → tvs is ${ratio >= 1 ? ratio.toFixed(2) + "x faster" : (1 / ratio).toFixed(2) + "x slower"} than cva`,
+    `  → ${bLabel} is ${ratio >= 1 ? ratio.toFixed(2) + "x faster" : (1 / ratio).toFixed(2) + "x slower"} than ${aLabel}`,
   );
 }
 
@@ -151,22 +156,46 @@ compare(
 // Scenario 8: cn utility — strings
 compare(
   "8. cn: strings",
-  () => ["btn", "mt-4", "px-2"].join(" "),
+  () => clsx("btn", "mt-4", "px-2"),
   () => cn("btn", "mt-4", "px-2"),
+  "clsx",
+  "cn",
 );
 
 // Scenario 9: cn utility — array + object
 compare(
   "9. cn: array+obj",
-  () => ["btn", "mt-4", "font-bold"].join(" "),
+  () => clsx(["btn", "mt-4", { "font-bold": true, italic: false }]),
   () => cn(["btn", "mt-4", { "font-bold": true, italic: false }]),
+  "clsx",
+  "cn",
+);
+
+// ─── cn with twMerge (createTvs) ──────────────────────────────────────────────
+
+// Scenario 10: cnTw vs twMerge — strings
+compare(
+  "10. cnTw: strings",
+  () => twMerge("btn", "mt-4", "px-2"),
+  () => cnTw("btn", "mt-4", "px-2"),
+  "twMerge",
+  "cnTw",
+);
+
+// Scenario 11: cnTw vs twMerge — array + object
+compare(
+  "11. cnTw: array+obj",
+  () => twMerge(clsx(["btn", "mt-4", { "font-bold": true, italic: false }])),
+  () => cnTw(["btn", "mt-4", { "font-bold": true, italic: false }]),
+  "twMerge+clsx",
+  "cnTw",
 );
 
 // ─── Recipe vs tvs ────────────────────────────────────────────────────────────
 // Each scenario compares a recipe-built builder against an equivalent tvs builder
 // with the same variant structure and defaults.
 
-// Scenario 10: recipe — variants only (no base class)
+// Scenario 12: recipe — variants only (no base class)
 const tvsVariantsOnly = tvs("").variants({
   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
   color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
@@ -181,12 +210,12 @@ const recipeVariantsOnly = recipe({
 });
 
 compareRecipe(
-  "10. recipe: variants only",
+  "12. recipe: variants only",
   () => tvsVariantsOnly({ size: "sm", color: "red" }),
   () => recipeVariantsOnly({ size: "sm", color: "red" }),
 );
 
-// Scenario 11: recipe — variants + defaults
+// Scenario 13: recipe — variants + defaults
 const tvsWithDefaults = tvs("")
   .variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
@@ -208,12 +237,12 @@ const recipeWithDefaults = recipe({
   .defaults({ size: "md" });
 
 compareRecipe(
-  "11. recipe: variants + defaults",
+  "13. recipe: variants + defaults",
   () => tvsWithDefaults({ color: "red", disabled: "yes" }),
   () => recipeWithDefaults({ color: "red", disabled: "yes" }),
 );
 
-// Scenario 12: recipe — variants + compound rules
+// Scenario 14: recipe — variants + compound rules
 const tvsWithCompound = tvs("")
   .variants({
     size: { sm: "text-sm", md: "text-md" },
@@ -235,12 +264,12 @@ const recipeWithCompound = recipe({ size: ["sm", "md"], color: ["red", "blue"] }
   ]);
 
 compareRecipe(
-  "12. recipe: compound variants",
+  "14. recipe: compound variants",
   () => tvsWithCompound({ size: "sm", color: "red" }),
   () => recipeWithCompound({ size: "sm", color: "red" }),
 );
 
-// Scenario 13: recipe — extended (two recipes fused)
+// Scenario 15: recipe — extended (two recipes fused)
 const tvsExtended = tvs("").variants({
   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
   color: { red: "bg-red", blue: "bg-blue" },
@@ -257,7 +286,7 @@ const recipeExtended = recipe({ size: ["sm", "md", "lg"] })
   });
 
 compareRecipe(
-  "13. recipe: extended (3 recipes)",
+  "15. recipe: extended (3 recipes)",
   () => tvsExtended({ size: "sm", color: "red", disabled: "no" }),
   () => recipeExtended({ size: "sm", color: "red", disabled: "no" }),
 );
