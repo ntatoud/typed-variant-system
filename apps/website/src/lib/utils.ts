@@ -1,4 +1,6 @@
-import { createTvs, recipe, type VariantProps } from "typed-variant-system";
+import { type VariantProps } from "typed-variant-system";
+import { createTvs } from "typed-variant-system/config";
+import { recipe } from "typed-variant-system/recipe";
 import { twMerge } from "tailwind-merge";
 
 export type { VariantProps };

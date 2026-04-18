@@ -1,25 +1,17 @@
 [
   {
-    "name": "typed-variant-system (full)",
+    "name": "typed-variant-system (main: tvs + cn)",
     "path": "./dist/index.mjs",
-    "limit": "3 kB"
+    "limit": "1 kB"
   },
   {
-    "name": "typed-variant-system (tree-shaken: tvs)",
-    "path": "./dist/index.mjs",
-    "import": "{ tvs }",
-    "limit": "2 kB"
+    "name": "typed-variant-system/recipe",
+    "path": "./dist/recipe.mjs",
+    "limit": "1.5 kB"
   },
   {
-    "name": "typed-variant-system (tree-shaken: recipe)",
-    "path": "./dist/index.mjs",
-    "import": "{ recipe }",
-    "limit": "2 kB"
-  },
-  {
-    "name": "typed-variant-system (tree-shaken: createTvs)",
-    "path": "./dist/index.mjs",
-    "import": "{ createTvs }",
-    "limit": "2 kB"
+    "name": "typed-variant-system/config",
+    "path": "./dist/config.mjs",
+    "limit": "1 kB"
   }
 ]
