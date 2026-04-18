@@ -1,3 +1,6 @@
+import type { RecipeMap } from "../internal-core/index.js";
+export type { RecipeMap };
+
 export type MergeFn = (...classes: string[]) => string;
 
 /** A clsx-compatible class value: string, number, boolean, null, undefined, array, object map, or render-prop function. */
@@ -47,8 +50,51 @@ export type InferProps<V extends VariantMap, D extends DefaultsOf<V>> = {
   className?: ClassValue | ((...args: never[]) => ClassValue);
 };
 
+/**
+ * Constrain a VariantMap against a RecipeMap:
+ * - Every key in R must be present in V (required)
+ * - For keys in R, the sub-map keys must cover the recipe's allowed values
+ * - Extra keys in V beyond R are allowed
+ */
+export type ConstrainedVariantMap<R extends RecipeMap, V extends VariantMap> = {
+  [K in keyof R]: Record<R[K][number], string>;
+} & {
+  [K in Exclude<keyof V, keyof R>]: V[K];
+};
+
+/** Merge a tuple of RecipeMaps into one. */
+export type MergeRecipes<Rs extends { _recipe: RecipeMap }[]> = Rs extends []
+  ? Record<never, never>
+  : Rs extends [{ _recipe: infer S extends RecipeMap }]
+    ? S
+    : Rs extends [
+          { _recipe: infer S extends RecipeMap },
+          ...infer Rest extends { _recipe: RecipeMap }[],
+        ]
+      ? S & MergeRecipes<Rest>
+      : never;
+
+/** Detect conflicting keys across a tuple of recipes (pairwise). */
+type TupleHasConflict<Rs extends { _recipe: RecipeMap }[]> = Rs extends [
+  { _recipe: infer A extends RecipeMap },
+  { _recipe: infer B extends RecipeMap },
+  ...infer Rest extends { _recipe: RecipeMap }[],
+]
+  ? [keyof A & keyof B] extends [never]
+    ? TupleHasConflict<[{ _recipe: B }, ...Rest]>
+    : true
+  : false;
+
+/** Validates a recipe tuple — `never` if any two recipes share conflicting keys. */
+export type ValidRecipes<Rs extends { _recipe: RecipeMap }[]> =
+  TupleHasConflict<Rs> extends true ? never : Rs;
+
 /** A callable builder that also exposes `.variants()`, `.defaults()`, `.compound()`. */
-export interface TvsBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
+export interface TvsBuilder<
+  V extends VariantMap,
+  D extends DefaultsOf<V>,
+  R extends RecipeMap = Record<never, never>,
+> {
   (
     props: keyof V extends never
       ? { class?: ClassValue; className?: ClassValue | ((...args: never[]) => ClassValue) }
@@ -56,13 +102,20 @@ export interface TvsBuilder<V extends VariantMap, D extends DefaultsOf<V>> {
   ): string;
   /**
    * Define variant keys and their class mappings.
+   * When the builder was created with recipe constraints, all recipe keys must be covered.
    * Can only be called once — throws at runtime if called again.
    */
-  variants<NV extends VariantMap>(v: NV): TvsBuilder<NV, Record<never, never>>;
+  variants<
+    NV extends [keyof R] extends [never]
+      ? VariantMap
+      : { [K in keyof R]: Record<R[K][number], string> } & VariantMap,
+  >(
+    v: NV,
+  ): TvsBuilder<NV, Record<never, never>, R>;
   /** Set default values for variants, making them optional at call-site. */
-  defaults<ND extends DefaultsOf<V>>(d: ND): TvsBuilder<V, ND>;
+  defaults<ND extends DefaultsOf<V>>(d: ND): TvsBuilder<V, ND, R>;
   /** Add compound variant rules applied when multiple variant conditions are met. */
-  compound(rules: Array<CompoundRule<V>>): TvsBuilder<V, D>;
+  compound(rules: Array<CompoundRule<V>>): TvsBuilder<V, D, R>;
 }
 
 /** Custom class merge function, e.g. `twMerge` from tailwind-merge. */

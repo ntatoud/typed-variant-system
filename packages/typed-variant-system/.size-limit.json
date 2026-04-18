@@ -11,9 +11,9 @@
     "limit": "2 kB"
   },
   {
-    "name": "typed-variant-system (tree-shaken: createRecipe)",
+    "name": "typed-variant-system (tree-shaken: recipe)",
     "path": "./dist/index.mjs",
-    "import": "{ createRecipe }",
+    "import": "{ recipe }",
     "limit": "2 kB"
   },
   {

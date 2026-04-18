@@ -1,6 +1,6 @@
 export { cn, tvs } from "./features/core/index.js";
 export { createTvs } from "./features/pre-configured-tvs/index.js";
-export { createRecipe } from "./features/recipe/index.js";
+export { recipe } from "./features/recipe/index.js";
 
 export type {
   ClassValue,
@@ -12,4 +12,4 @@ export type {
   VariantProps,
 } from "./features/core/types.js";
 
-export type { Recipe, RecipeClasses } from "./features/recipe/types.js";
+export type { Recipe } from "./features/recipe/types.js";

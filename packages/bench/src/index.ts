@@ -1,5 +1,5 @@
 import { cva } from "cva";
-import { cn, createRecipe, tvs } from "typed-variant-system";
+import { cn, recipe, tvs } from "typed-variant-system";
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
@@ -171,7 +171,7 @@ const tvsVariantsOnly = tvs("").variants({
   color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
 });
 
-const recipeVariantsOnly = createRecipe({
+const recipeVariantsOnly = recipe({
   size: ["sm", "md", "lg"],
   color: ["red", "blue", "green"],
 }).implement({
@@ -194,7 +194,7 @@ const tvsWithDefaults = tvs("")
   })
   .defaults({ size: "md" });
 
-const recipeWithDefaults = createRecipe({
+const recipeWithDefaults = recipe({
   size: ["sm", "md", "lg"],
   color: ["red", "blue", "green"],
   disabled: ["yes", "no"],
@@ -223,7 +223,7 @@ const tvsWithCompound = tvs("")
     { size: "md", color: "blue", class: "ring-blue" },
   ]);
 
-const recipeWithCompound = createRecipe({ size: ["sm", "md"], color: ["red", "blue"] })
+const recipeWithCompound = recipe({ size: ["sm", "md"], color: ["red", "blue"] })
   .implement({
     size: { sm: "text-sm", md: "text-md" },
     color: { red: "bg-red", blue: "bg-blue" },
@@ -246,9 +246,9 @@ const tvsExtended = tvs("").variants({
   disabled: { yes: "opacity-50", no: "" },
 });
 
-const recipeExtended = createRecipe({ size: ["sm", "md", "lg"] })
-  .extend(createRecipe({ color: ["red", "blue"] }))
-  .extend(createRecipe({ disabled: ["yes", "no"] }))
+const recipeExtended = recipe({ size: ["sm", "md", "lg"] })
+  .and(recipe({ color: ["red", "blue"] }))
+  .and(recipe({ disabled: ["yes", "no"] }))
   .implement({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue" },

@@ -1,5 +1,15 @@
 import { joinClassValues, makeBuilder } from "../internal-core/index.js";
-import type { ClassValue, CompoundRule, Not, TvsBuilder, VariantMap } from "./types.js";
+import type {
+  ClassValue,
+  CompoundRule,
+  MergeRecipes,
+  Not,
+  RecipeMap,
+  TvsBuilder,
+  ValidRecipes,
+  VariantMap,
+} from "./types.js";
+
 export type {
   ClassValue,
   CompoundRule,
@@ -52,7 +62,19 @@ export function matchesCompound<V extends VariantMap>(
 }
 
 /** Default `tvs` instance with no custom merge function. */
-export function tvs(base: string): TvsBuilder<Record<never, never>, Record<never, never>> {
+export function tvs(base: string): TvsBuilder<Record<never, never>, Record<never, never>>;
+export function tvs<Rs extends { _recipe: RecipeMap }[]>(
+  base: string,
+  ...recipes: ValidRecipes<Rs>
+): TvsBuilder<Record<never, never>, Record<never, never>, MergeRecipes<Rs>>;
+export function tvs(
+  base: string,
+  ...recipes: { _recipe: RecipeMap }[]
+): TvsBuilder<never, never, RecipeMap> {
+  const mergedRecipe: Record<string, readonly string[]> = {};
+  for (const r of recipes) {
+    Object.assign(mergedRecipe, r._recipe);
+  }
   return makeBuilder(
     base,
     {} as Record<never, never>,
@@ -61,7 +83,8 @@ export function tvs(base: string): TvsBuilder<Record<never, never>, Record<never
     undefined,
     false,
     matchesCompound,
-  );
+    mergedRecipe as RecipeMap,
+  ) as unknown as TvsBuilder<never, never, RecipeMap>;
 }
 
 /** Default `cn` instance with no custom merge function. */

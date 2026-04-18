@@ -1,6 +1,13 @@
 import { joinClassValues, makeBuilder } from "../internal-core/index.js";
 import { matchesCompound } from "../core/index.js";
-import type { ClassValue, TvsBuilder, TvsOptions } from "../core/types.js";
+import type {
+  ClassValue,
+  MergeRecipes,
+  RecipeMap,
+  TvsBuilder,
+  TvsOptions,
+  ValidRecipes,
+} from "../core/types.js";
 
 /**
  * Create a configured `tvs` factory.
@@ -16,7 +23,19 @@ import type { ClassValue, TvsBuilder, TvsOptions } from "../core/types.js";
 export function createTvs(options?: TvsOptions) {
   const customMerge = options?.merge;
 
-  function tvs(base: string): TvsBuilder<Record<never, never>, Record<never, never>> {
+  function tvs(base: string): TvsBuilder<Record<never, never>, Record<never, never>>;
+  function tvs<Rs extends { _recipe: RecipeMap }[]>(
+    base: string,
+    ...recipes: ValidRecipes<Rs>
+  ): TvsBuilder<Record<never, never>, Record<never, never>, MergeRecipes<Rs>>;
+  function tvs(
+    base: string,
+    ...recipes: { _recipe: RecipeMap }[]
+  ): TvsBuilder<never, never, RecipeMap> {
+    const mergedRecipe: Record<string, readonly string[]> = {};
+    for (const r of recipes) {
+      Object.assign(mergedRecipe, r._recipe);
+    }
     return makeBuilder(
       base,
       {} as Record<never, never>,
@@ -25,7 +44,8 @@ export function createTvs(options?: TvsOptions) {
       customMerge,
       false,
       matchesCompound,
-    );
+      mergedRecipe as RecipeMap,
+    ) as unknown as TvsBuilder<never, never, RecipeMap>;
   }
 
   function cn(...args: ClassValue[]): string {

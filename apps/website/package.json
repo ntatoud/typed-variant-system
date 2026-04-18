@@ -11,11 +11,12 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@fontsource-variable/geist": "catalog:",
+    "@fontsource-variable/inter": "catalog:",
     "cmdk": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "shadcn": "catalog:",
+    "shadcn": "4.3.0",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:",
     "typed-variant-system": "workspace:*"
