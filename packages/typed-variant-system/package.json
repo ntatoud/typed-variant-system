@@ -1,6 +1,6 @@
 {
   "name": "typed-variant-system",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Type-safe class variance builder. A maintained, feature-rich CVA replacement.",
   "keywords": [
     "class-variance-authority",
@@ -19,7 +19,8 @@
     "url": "git+https://github.com/ntatoud/typed-variant-system.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "type": "module",
   "sideEffects": false,
