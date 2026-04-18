@@ -5,11 +5,11 @@ export type { VariantProps };
 export const { tvs, cn } = createTvs({ merge: twMerge });
 
 /** Shared variant shape for components that expose the standard intent scale. */
-export const intentShape = recipe({
+export const intentVariants = recipe({
   variant: ["default", "secondary", "destructive", "outline", "ghost", "link"] as const,
 });
 
 /** Shared size shape for form elements and components that expose the standard size scale. */
-export const sizeShape = recipe({
+export const sizeVariants = recipe({
   size: ["sm", "default", "lg"] as const,
 });

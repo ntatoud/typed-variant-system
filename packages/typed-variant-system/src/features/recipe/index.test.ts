@@ -110,6 +110,23 @@ describe("callable recipe", () => {
     expect(btn({ size: "sm", intent: "danger" })).toBe("btn text-sm bg-red");
   });
 
+  it(".and() accepts a plain shape object", () => {
+    const combined = recipe({ size: ["sm", "md"] as const }).and({
+      color: ["red", "blue"] as const,
+    });
+    const btn = combined.implement({
+      size: { sm: "text-sm", md: "text-md" },
+      color: { red: "bg-red", blue: "bg-blue" },
+    });
+    expect(btn({ size: "sm", color: "red" })).toBe("text-sm bg-red");
+  });
+
+  it(".merge() accepts a plain shape object", () => {
+    const merged = recipe({ size: ["sm", "md"] as const }).merge({ size: ["lg"] as const });
+    const btn = merged.implement({ size: { sm: "text-sm", md: "text-md", lg: "text-lg" } });
+    expect(btn({ size: "lg" })).toBe("text-lg");
+  });
+
   it("callable recipe supports .defaults()", () => {
     const shape = recipe({ size: ["sm", "md"] as const });
     const btn = shape("btn")

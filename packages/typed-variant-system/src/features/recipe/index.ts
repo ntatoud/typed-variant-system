@@ -13,17 +13,19 @@ function makeRecipe<S extends RecipeMap>(shape: S): Recipe<S> {
 
   call._recipe = shape;
 
-  call.and = function (other: Recipe<RecipeMap>) {
-    return makeRecipe({ ...shape, ...other._recipe } as unknown as RecipeMap) as never;
+  call.and = function (other: Recipe<RecipeMap> | RecipeMap) {
+    const otherShape = typeof other === "function" ? other._recipe : other;
+    return makeRecipe({ ...shape, ...otherShape } as unknown as RecipeMap) as never;
   };
 
-  call.merge = function (other: Recipe<RecipeMap>) {
+  call.merge = function (other: Recipe<RecipeMap> | RecipeMap) {
+    const otherShape = typeof other === "function" ? other._recipe : other;
     const merged: Record<string, readonly string[]> = { ...shape };
-    for (const key in other._recipe) {
+    for (const key of Object.keys(otherShape)) {
       if (key in merged) {
-        merged[key] = [...merged[key]!, ...other._recipe[key]!];
+        merged[key] = [...merged[key]!, ...otherShape[key]!];
       } else {
-        merged[key] = other._recipe[key]!;
+        merged[key] = otherShape[key]!;
       }
     }
     return makeRecipe(merged as unknown as RecipeMap) as never;
@@ -55,10 +57,10 @@ function makeRecipe<S extends RecipeMap>(shape: S): Recipe<S> {
  *
  * @example
  * ```ts
- * const sizeShape = recipe({ size: ["sm", "md", "lg"] });
+ * const sizeVariants = recipe({ size: ["sm", "md", "lg"] });
  * const colorShape = recipe({ color: ["red", "blue"] });
  *
- * const buttonVariants = tvs("btn", sizeShape, colorShape)
+ * const buttonVariants = tvs("btn", sizeVariants, colorShape)
  *   .variants({
  *     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
  *     color: { red: "bg-red", blue: "bg-blue" },
