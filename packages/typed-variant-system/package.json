@@ -25,6 +25,8 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.mjs",
+    "./config": "./dist/config.mjs",
+    "./recipe": "./dist/recipe.mjs",
     "./package.json": "./package.json"
   },
   "scripts": {

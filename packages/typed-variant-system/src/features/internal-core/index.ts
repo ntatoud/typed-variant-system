@@ -7,6 +7,9 @@ import type {
   VariantMap,
 } from "../core/types.js";
 
+/** A pure variant schema: maps variant keys to their possible string values. */
+export type RecipeMap = Record<string, readonly string[]>;
+
 type Resolver = { key: string; map: Record<string, string>; def: string | undefined };
 
 type CompoundMatcher = <V extends VariantMap>(
@@ -67,7 +70,11 @@ export function joinClassValues(args: ClassValue[]): string {
   return str;
 }
 
-export function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
+export function makeBuilder<
+  V extends VariantMap,
+  D extends DefaultsOf<V>,
+  R extends RecipeMap = Record<never, never>,
+>(
   base: string,
   variantMap: V,
   defaultMap: D,
@@ -75,7 +82,9 @@ export function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
   customMerge: MergeFn | undefined,
   variantsLocked: boolean,
   matchesCompound: CompoundMatcher,
-): TvsBuilder<V, D> {
+  // eslint-disable-next-line only-used-in-recursion -- phantom parameter, carries the R generic for type-level recipe constraint
+  _recipeConstraint?: R,
+): TvsBuilder<V, D, R> {
   // Flatten variant lookup at build time: one array, no double property access per call
   const defaultMapRaw = defaultMap as Record<string, unknown>;
   const resolvers: Resolver[] = Object.keys(variantMap).map((key) => {
@@ -171,7 +180,16 @@ export function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
     if (variantsLocked) {
       throw new Error("tvs: .variants() can only be called once per builder");
     }
-    return makeBuilder(base, v, {} as Record<never, never>, [], customMerge, true, matchesCompound);
+    return makeBuilder(
+      base,
+      v,
+      {} as Record<never, never>,
+      [],
+      customMerge,
+      true,
+      matchesCompound,
+      _recipeConstraint,
+    );
   };
 
   call.defaults = function <ND extends DefaultsOf<V>>(d: ND) {
@@ -183,6 +201,7 @@ export function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
       customMerge,
       variantsLocked,
       matchesCompound,
+      _recipeConstraint,
     );
   };
 
@@ -195,8 +214,9 @@ export function makeBuilder<V extends VariantMap, D extends DefaultsOf<V>>(
       customMerge,
       variantsLocked,
       matchesCompound,
+      _recipeConstraint,
     );
   };
 
-  return call as unknown as TvsBuilder<V, D>;
+  return call as unknown as TvsBuilder<V, D, R>;
 }
