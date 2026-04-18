@@ -1,5 +1,4 @@
 export { cn, tvs } from "./features/core/index.js";
-export { createTvs } from "./features/pre-configured-tvs/index.js";
 
 export type {
   ClassValue,

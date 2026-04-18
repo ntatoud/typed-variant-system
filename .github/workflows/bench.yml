@@ -35,60 +35,81 @@ jobs:
             const fs = require('fs');
             const output = fs.readFileSync('bench-output.txt', 'utf8');
 
-            const sections = [];
-            let current = null;
+            // Parse output into categories > sections > rows.
+            // Categories are delimited by ━━━ lines, sections by ── lines.
+            const categories = [];
+            let currentCategory = null;
+            let currentSection = null;
 
             for (const raw of output.split('\n')) {
               const line = raw.trim();
+
+              const categoryMatch = line.match(/^━━━ (.+?) ━+$/);
+              if (categoryMatch) {
+                currentSection = null;
+                currentCategory = { title: categoryMatch[1], note: '', sections: [] };
+                categories.push(currentCategory);
+                continue;
+              }
+
+              // Parenthesised note line just below a category header
+              if (currentCategory && !currentSection && line.startsWith('(')) {
+                currentCategory.note = line.replace(/^\(|\)$/g, '');
+                continue;
+              }
+
               const sectionMatch = line.match(/^── (.+?) ──$/);
-              if (sectionMatch) {
-                current = { title: sectionMatch[1], rows: [], verdict: '' };
-                sections.push(current);
+              if (sectionMatch && currentCategory) {
+                currentSection = { title: sectionMatch[1], rows: [], verdict: '' };
+                currentCategory.sections.push(currentSection);
                 continue;
               }
-              const rowMatch = line.match(/^(cva|tvs|recipe)\s+avg=\s*([\d.]+)ns\s+p50=\s*([\d.]+)ns\s+p99=\s*([\d.]+)ns\s+([\d.]+)\s+M ops\/s/);
-              if (rowMatch && current) {
-                current.rows.push({ tool: rowMatch[1], avg: rowMatch[2], p50: rowMatch[3], p99: rowMatch[4], mops: rowMatch[5] });
+
+              const rowMatch = line.match(/^(\S+)\s+avg=\s*([\d.]+)ns\s+p50=\s*([\d.]+)ns\s+p99=\s*([\d.]+)ns\s+([\d.]+)\s+M ops\/s/);
+              if (rowMatch && currentSection) {
+                currentSection.rows.push({ tool: rowMatch[1], avg: rowMatch[2], p50: rowMatch[3], p99: rowMatch[4], mops: rowMatch[5] });
                 continue;
               }
+
               const verdictMatch = line.match(/^→ (.+)/);
-              if (verdictMatch && current) {
-                current.verdict = verdictMatch[1];
+              if (verdictMatch && currentSection) {
+                currentSection.verdict = verdictMatch[1];
               }
             }
 
             function renderSection({ title, rows, verdict }) {
-              let s = `### ${title}\n\n`;
-              s += '| Tool | M ops/s |\n';
-              s += '|---|---:|\n';
-              for (const { tool, mops } of rows) {
-                s += `| \`${tool}\` | ${mops} |\n`;
+              let s = `#### ${title}\n\n`;
+              s += '| Tool | avg | p50 | p99 | M ops/s |\n';
+              s += '|---|---:|---:|---:|---:|\n';
+              for (const { tool, avg, p50, p99, mops } of rows) {
+                s += `| \`${tool}\` | ${avg} ns | ${p50} ns | ${p99} ns | ${mops} |\n`;
               }
               if (verdict) {
+                const isFaster = !verdict.includes('slower');
+                const icon = isFaster ? '✅' : '⚠️';
                 const emphasized = verdict.replace(/([\d.]+x (?:faster|slower))/, '**$1**');
-                s += `\n${emphasized}\n`;
+                s += `\n${icon} ${emphasized}\n`;
               }
               return s;
             }
 
-            const faster = sections.filter(s => s.verdict && !s.verdict.includes('slower'));
-            const slower = sections.filter(s => s.verdict && s.verdict.includes('slower'));
+            const CATEGORY_ICONS = {
+              'tvs vs cva': '⚡',
+              'cn parity': '🔁',
+              'internal overhead': '🔬',
+            };
 
-            let md = '<!-- bench-results -->\n## Benchmark Results\n\n';
+            let md = '<!-- bench-results -->\n## ⚡ Benchmark Results\n\n';
 
-            if (faster.length) {
-              md += `<details>\n<summary>✅ Faster (${faster.length})</summary>\n\n`;
-              for (const section of faster) md += renderSection(section) + '\n';
+            for (const category of categories) {
+              const icon = Object.entries(CATEGORY_ICONS).find(([k]) => category.title.toLowerCase().includes(k.toLowerCase()))?.[1] ?? '📊';
+              const sectionsWithVerdict = category.sections.filter(s => s.rows.length > 0);
+              md += `<details>\n<summary>${icon} <strong>${category.title}</strong></summary>\n\n`;
+              if (category.note) md += `> ${category.note}\n\n`;
+              for (const section of sectionsWithVerdict) md += renderSection(section) + '\n';
               md += '</details>\n\n';
             }
 
-            if (slower.length) {
-              md += `<details>\n<summary>⚠️ Slower (${slower.length})</summary>\n\n`;
-              for (const section of slower) md += renderSection(section) + '\n';
-              md += '</details>\n\n';
-            }
-
-            md += '_Scenarios 1–9: typed-variant-system vs cva — Scenarios 10–13: recipe vs typed-variant-system_\n\n';
             md += '> Benchmarks run on GitHub Actions — relative comparisons are meaningful, absolute values vary by runner.';
 
             const { data: comments } = await github.rest.issues.listComments({
