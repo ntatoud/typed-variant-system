@@ -183,54 +183,52 @@ export const sizeShape = recipe({ size: ["sm", "default", "lg"] as const });
 export const intentShape = recipe({ intent: ["default", "secondary", "destructive"] as const });
 ```
 
-### Use a recipe as a constraint for `tvs`
+### Calling a recipe directly
 
-Pass a recipe as the second (or further) argument to `tvs`. The `.variants()` call is then type-checked: all recipe keys are required, and only the declared values are accepted.
+Recipes are **callable** — `sizeShape("base")` is shorthand for `tvs("base", sizeShape)` and the primary way to create a constrained builder:
 
 ```ts
-import { tvs } from "typed-variant-system";
 import { sizeShape, intentShape } from "./shapes";
 
-const input = tvs("input rounded-xl border bg-input/50 px-3 outline-none", sizeShape)
+const input = sizeShape("input rounded-xl border bg-input/50 px-3")
   .variants({
-    size: {
-      sm: "h-7 text-xs",
-      default: "h-9 text-sm",
-      lg: "h-10 text-base",
-    },
+    size: { sm: "h-7 text-xs", default: "h-9 text-sm", lg: "h-10 text-base" },
   })
   .defaults({ size: "default" });
 
 // TypeScript error — "xl" is not in sizeShape:
-const bad = tvs("...", sizeShape).variants({ size: { xl: "h-14" } }); // ✗
+sizeShape("...").variants({ size: { xl: "h-14" } }); // ✗
 ```
 
-Multiple recipes can be passed together — TypeScript errors if they conflict:
+Compose recipes first, then call:
 
 ```ts
-const button = tvs("btn", sizeShape, intentShape)
+const button = sizeShape
+  .and(intentShape)("btn font-medium transition-colors")
   .variants({
-    size: {
-      sm: "h-8 px-3 text-xs",
-      default: "h-9 px-4 text-sm",
-      lg: "h-11 px-6 text-base",
-    },
+    size: { sm: "h-8 px-3 text-xs", default: "h-9 px-4 text-sm", lg: "h-11 px-6 text-base" },
     intent: {
       default: "bg-primary text-primary-foreground",
-      secondary: "bg-secondary text-secondary-foreground",
       destructive: "bg-destructive text-white",
     },
   })
   .defaults({ size: "default", intent: "default" });
 ```
 
-Extra variant keys beyond what the recipe declares are fine:
+Extra variant keys beyond what the recipe declares are always allowed:
 
 ```ts
-const button = tvs("btn", sizeShape).variants({
+const button = sizeShape("btn").variants({
   size: { sm: "h-8", default: "h-9", lg: "h-11" }, // required by recipe
   loading: "opacity-70 pointer-events-none", // extra — always allowed
 });
+```
+
+You can also pass recipes as arguments to `tvs` — both forms are equivalent:
+
+```ts
+sizeShape("btn").variants({ ... })
+tvs("btn", sizeShape).variants({ ... })   // same thing
 ```
 
 ### `recipe.implement()` — stamp a recipe with classes directly
