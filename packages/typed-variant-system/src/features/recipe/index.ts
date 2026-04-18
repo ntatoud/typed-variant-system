@@ -1,8 +1,6 @@
-import { makeBuilder } from "../internal-core/index.js";
-import { matchesCompound, tvs } from "../core/index.js";
-import type { VariantMap } from "../core/types.js";
+import { tvs } from "../core/index.js";
 
-import type { Recipe, RecipeMap, VariantMapOf } from "./types.js";
+import type { Recipe, RecipeMap } from "./types.js";
 
 export type { Recipe, RecipeClasses, RecipeMap, VariantMapOf } from "./types.js";
 
@@ -33,19 +31,6 @@ function makeRecipe<S extends RecipeMap>(shape: S): Recipe<S> {
 
   call.variants = function (extra: RecipeMap) {
     return makeRecipe({ ...shape, ...extra } as unknown as RecipeMap) as never;
-  };
-
-  call.implement = function (classes: VariantMapOf<S> & { base?: string }) {
-    const { base = "", ...variantClasses } = classes as { base?: string } & VariantMapOf<S>;
-    return makeBuilder(
-      base,
-      variantClasses as unknown as VariantMap,
-      {} as Record<never, never>,
-      [],
-      undefined,
-      true,
-      matchesCompound,
-    ) as never;
   };
 
   return call as unknown as Recipe<S>;

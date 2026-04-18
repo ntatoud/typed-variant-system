@@ -7,10 +7,7 @@ export type VariantMapOf<S extends RecipeMap> = {
   [K in keyof S]: Record<S[K][number], string>;
 };
 
-/**
- * Extract the class mappings type from a recipe instance.
- * Useful for annotating shared class objects before passing to `.implement()`.
- */
+/** Extract the class mappings type from a recipe instance. */
 export type RecipeClasses<T> = T extends Recipe<infer S> ? VariantMapOf<S> : never;
 
 /** Produces `never` when two RecipeMaps share conflicting keys, triggering a type error at call site. */
@@ -64,9 +61,4 @@ export interface Recipe<S extends RecipeMap> {
 
   /** Add extra variant keys to this recipe's shape. */
   variants<S2 extends RecipeMap>(extra: S2): Recipe<S & S2>;
-
-  /** Stamp this shape into a builder by providing class mappings. */
-  implement(
-    classes: VariantMapOf<S> & { base?: string },
-  ): TvsBuilder<VariantMapOf<S>, Record<never, never>>;
 }

@@ -340,6 +340,18 @@ makeInput(sizeVariants); // ✓
 
 ---
 
+## Documentation
+
+Full documentation is in [`apps/docs/`](./apps/docs/):
+
+- [Getting Started](./apps/docs/getting-started.md)
+- [API Reference](./apps/docs/api-reference.md)
+- [Recipes](./apps/docs/recipes.md)
+- [Examples](./apps/docs/examples.md)
+- [Edge Cases](./apps/docs/edge-cases.md)
+
+---
+
 ## Development
 
 ```bash

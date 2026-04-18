@@ -21,7 +21,7 @@ const tvsVariantsOnly = tvs("").variants({
 const recipeVariantsOnly = recipe({
   size: ["sm", "md", "lg"],
   color: ["red", "blue", "green"],
-}).implement({
+})("").variants({
   size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
   color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
 });
@@ -38,8 +38,8 @@ const recipeWithDefaults = recipe({
   size: ["sm", "md", "lg"],
   color: ["red", "blue", "green"],
   disabled: ["yes", "no"],
-})
-  .implement({
+})("")
+  .variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue", green: "bg-green" },
     disabled: { yes: "opacity-50", no: "" },
@@ -56,8 +56,8 @@ const tvsWithCompound = tvs("")
     { size: "md", color: "blue", class: "ring-blue" },
   ]);
 
-const recipeWithCompound = recipe({ size: ["sm", "md"], color: ["red", "blue"] })
-  .implement({
+const recipeWithCompound = recipe({ size: ["sm", "md"], color: ["red", "blue"] })("")
+  .variants({
     size: { sm: "text-sm", md: "text-md" },
     color: { red: "bg-red", blue: "bg-blue" },
   })
@@ -74,8 +74,8 @@ const tvsExtended = tvs("").variants({
 
 const recipeExtended = recipe({ size: ["sm", "md", "lg"] })
   .and(recipe({ color: ["red", "blue"] }))
-  .and(recipe({ disabled: ["yes", "no"] }))
-  .implement({
+  .and(recipe({ disabled: ["yes", "no"] }))("")
+  .variants({
     size: { sm: "text-sm", md: "text-md", lg: "text-lg" },
     color: { red: "bg-red", blue: "bg-blue" },
     disabled: { yes: "opacity-50", no: "" },
