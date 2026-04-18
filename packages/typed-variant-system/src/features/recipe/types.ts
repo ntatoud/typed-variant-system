@@ -18,8 +18,11 @@ type NoConflict<A extends RecipeMap, B extends RecipeMap> = [keyof A & keyof B] 
   ? B
   : never;
 
+/** Forces TypeScript to evaluate a mapped/conditional type into a concrete object type. */
+type Resolve<T> = { [K in keyof T]: T[K] };
+
 /** Union the value tuples of two RecipeMaps, merging conflicting keys by concatenating their value arrays. */
-type MergedRecipeMap<A extends RecipeMap, B extends RecipeMap> = {
+type MergedRecipeMap<A extends RecipeMap, B extends RecipeMap> = Resolve<{
   [K in keyof A | keyof B]: K extends keyof A & keyof B
     ? readonly [...A[K], ...B[K]]
     : K extends keyof A
@@ -27,7 +30,7 @@ type MergedRecipeMap<A extends RecipeMap, B extends RecipeMap> = {
       : K extends keyof B
         ? B[K]
         : never;
-};
+}>;
 
 /**
  * A reusable, composable variant schema that can be extended with other shapes.

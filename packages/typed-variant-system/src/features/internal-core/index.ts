@@ -82,6 +82,7 @@ export function makeBuilder<
   customMerge: MergeFn | undefined,
   variantsLocked: boolean,
   matchesCompound: CompoundMatcher,
+  // eslint-disable-next-line only-used-in-recursion -- phantom parameter, carries the R generic for type-level recipe constraint
   _recipeConstraint?: R,
 ): TvsBuilder<V, D, R> {
   // Flatten variant lookup at build time: one array, no double property access per call

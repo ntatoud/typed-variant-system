@@ -13,3 +13,6 @@ export const intentVariants = recipe({
 export const sizeVariants = recipe({
   size: ["sm", "default", "lg"] as const,
 });
+
+/** Combined intent + size shape for components that expose both scales (e.g. Button). */
+export const intentAndSizeVariants = intentVariants.and(sizeVariants);

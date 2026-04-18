@@ -179,31 +179,31 @@ A **recipe** defines a shared variant contract — the keys and their allowed va
 ```ts
 import { recipe } from "typed-variant-system";
 
-export const sizeShape = recipe({ size: ["sm", "default", "lg"] as const });
+export const sizeVariants = recipe({ size: ["sm", "default", "lg"] as const });
 export const intentShape = recipe({ intent: ["default", "secondary", "destructive"] as const });
 ```
 
 ### Calling a recipe directly
 
-Recipes are **callable** — `sizeShape("base")` is shorthand for `tvs("base", sizeShape)` and the primary way to create a constrained builder:
+Recipes are **callable** — `sizeVariants("base")` is shorthand for `tvs("base", sizeVariants)` and the primary way to create a constrained builder:
 
 ```ts
-import { sizeShape, intentShape } from "./shapes";
+import { sizeVariants, intentShape } from "./shapes";
 
-const input = sizeShape("input rounded-xl border bg-input/50 px-3")
+const input = sizeVariants("input rounded-xl border bg-input/50 px-3")
   .variants({
     size: { sm: "h-7 text-xs", default: "h-9 text-sm", lg: "h-10 text-base" },
   })
   .defaults({ size: "default" });
 
-// TypeScript error — "xl" is not in sizeShape:
-sizeShape("...").variants({ size: { xl: "h-14" } }); // ✗
+// TypeScript error — "xl" is not in sizeVariants:
+sizeVariants("...").variants({ size: { xl: "h-14" } }); // ✗
 ```
 
 Compose recipes first, then call:
 
 ```ts
-const button = sizeShape
+const button = sizeVariants
   .and(intentShape)("btn font-medium transition-colors")
   .variants({
     size: { sm: "h-8 px-3 text-xs", default: "h-9 px-4 text-sm", lg: "h-11 px-6 text-base" },
@@ -218,7 +218,7 @@ const button = sizeShape
 Extra variant keys beyond what the recipe declares are always allowed:
 
 ```ts
-const button = sizeShape("btn").variants({
+const button = sizeVariants("btn").variants({
   size: { sm: "h-8", default: "h-9", lg: "h-11" }, // required by recipe
   loading: "opacity-70 pointer-events-none", // extra — always allowed
 });
@@ -227,14 +227,14 @@ const button = sizeShape("btn").variants({
 You can also pass recipes as arguments to `tvs` — both forms are equivalent:
 
 ```ts
-sizeShape("btn").variants({ ... })
-tvs("btn", sizeShape).variants({ ... })   // same thing
+sizeVariants("btn").variants({ ... })
+tvs("btn", sizeVariants).variants({ ... })   // same thing
 ```
 
 ### `recipe.implement()` — stamp a recipe with classes directly
 
 ```ts
-const sizeClasses = sizeShape
+const sizeClasses = sizeVariants
   .implement({
     base: "transition-all",
     size: {
@@ -254,11 +254,11 @@ sizeClasses({}); // → "transition-all h-9 text-sm"
 Composes two recipes. TypeScript errors at compile time if they share any key.
 
 ```ts
-const shape = sizeShape.and(intentShape);
+const shape = sizeVariants.and(intentShape);
 // → Recipe<{ size: [...], intent: [...] }>
 
 // Conflict → compile-time error:
-const bad = sizeShape.and(recipe({ size: ["xs", "2xl"] as const })); // ✗
+const bad = sizeVariants.and(recipe({ size: ["xs", "2xl"] as const })); // ✗
 ```
 
 ### `.merge()` — soft composition
@@ -288,7 +288,7 @@ const heading = tvs("heading", extended).variants({
 Extend a recipe with extra keys inline, without defining a new shared shape:
 
 ```ts
-const buttonShape = sizeShape.variants({ loading: ["idle", "pending"] as const });
+const buttonShape = sizeVariants.variants({ loading: ["idle", "pending"] as const });
 // → Recipe<{ size: [...], loading: ["idle","pending"] }>
 ```
 
@@ -305,7 +305,7 @@ function makeInput(shape: Recipe<{ size: readonly ["sm", "default", "lg"] }>) {
   });
 }
 
-makeInput(sizeShape); // ✓
+makeInput(sizeVariants); // ✓
 ```
 
 ---
