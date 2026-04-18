@@ -2,6 +2,24 @@
 
 All notable changes to `typed-variant-system` will be documented in this file.
 
+## [0.5.0] - 2026-04-18
+
+### Added
+
+- Recipe API with `.and()`, `.merge()`, `.variants()`, `.implement()` methods and `Recipe` type ([#30](https://github.com/ntatoud/typed-variant-system/pull/30))
+- `tvs` recipe constraints for type-safe variant schemas ([#30](https://github.com/ntatoud/typed-variant-system/pull/30))
+
+### Changed
+
+- Styleguide overhaul ([#30](https://github.com/ntatoud/typed-variant-system/pull/30))
+- Add docs site ([#32](https://github.com/ntatoud/typed-variant-system/pull/32))
+- Remove recipe `.implement()` from public docs ([#32](https://github.com/ntatoud/typed-variant-system/pull/32))
+
+### Fixed
+
+- Include `README.md` in npm package (was a broken symlink)
+- Fix `cn` benchmark scenarios and add `cnTw` vs `twMerge` benchmarks ([#31](https://github.com/ntatoud/typed-variant-system/pull/31))
+
 ## [0.4.1] - 2026-04-15
 
 ### Fixed
