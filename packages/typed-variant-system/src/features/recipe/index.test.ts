@@ -84,3 +84,37 @@ describe("recipes", () => {
     expect(btn({ size: "sm", class: "btn" })).toBe("text-sm btn");
   });
 });
+
+describe("callable recipe", () => {
+  it("recipe(shape)(base) creates a constrained builder", () => {
+    const shape = recipe({ size: ["sm", "md"] as const });
+    const btn = shape("btn").variants({ size: { sm: "text-sm", md: "text-md" } });
+    expect(btn({ size: "sm" })).toBe("btn text-sm");
+  });
+
+  it("callable recipe includes the base class", () => {
+    const shape = recipe({ size: ["sm", "md"] as const });
+    const btn = shape("base-class").variants({ size: { sm: "a", md: "b" } });
+    expect(btn({ size: "md" })).toBe("base-class b");
+  });
+
+  it("composed recipe is callable", () => {
+    const size = recipe({ size: ["sm", "md"] as const });
+    const intent = recipe({ intent: ["primary", "danger"] as const });
+    const btn = size
+      .and(intent)("btn")
+      .variants({
+        size: { sm: "text-sm", md: "text-md" },
+        intent: { primary: "bg-blue", danger: "bg-red" },
+      });
+    expect(btn({ size: "sm", intent: "danger" })).toBe("btn text-sm bg-red");
+  });
+
+  it("callable recipe supports .defaults()", () => {
+    const shape = recipe({ size: ["sm", "md"] as const });
+    const btn = shape("btn")
+      .variants({ size: { sm: "text-sm", md: "text-md" } })
+      .defaults({ size: "md" });
+    expect(btn({})).toBe("btn text-md");
+  });
+});

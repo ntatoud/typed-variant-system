@@ -1,5 +1,4 @@
-import type { TvsBuilder } from "../core/types.js";
-import type { RecipeMap } from "../internal-core/index.js";
+import type { RecipeMap, TvsBuilder } from "../core/types.js";
 
 export type { RecipeMap };
 
@@ -31,35 +30,39 @@ type MergedRecipeMap<A extends RecipeMap, B extends RecipeMap> = {
 };
 
 /**
- * A reusable, composable variant schema that can be extended with other shapes
- * and passed to `tvs()` as a type constraint.
+ * A reusable, composable variant schema that can be extended with other shapes.
+ *
+ * Recipes are callable — `sizeShape("base")` is shorthand for `tvs("base", sizeShape)`
+ * and returns a constrained builder directly.
+ *
+ * @example
+ * ```ts
+ * const input = sizeShape("input rounded-xl border")
+ *   .variants({ size: { sm: "h-7", default: "h-9", lg: "h-11" } })
+ *   .defaults({ size: "default" });
+ *
+ * // Compose first, then call:
+ * const button = sizeShape.and(intentShape)("btn font-medium")
+ *   .variants({ size: { ... }, intent: { ... } });
+ * ```
  */
 export interface Recipe<S extends RecipeMap> {
+  /** Create a constrained builder — shorthand for `tvs(base, thisRecipe)`. */
+  (base: string): TvsBuilder<Record<never, never>, Record<never, never>, S>;
+
   /** The raw shape map. */
   readonly _recipe: S;
 
-  /**
-   * Strict merge — type error if recipes share any keys.
-   * Use when combining two unrelated shapes that must not overlap.
-   */
+  /** Strict compose — type error if recipes share any keys. */
   and<S2 extends RecipeMap>(other: Recipe<NoConflict<S, S2>>): Recipe<S & S2>;
 
-  /**
-   * Soft merge — union values for conflicting keys, no error.
-   * Use when two shapes share a key and you want all possible values.
-   */
+  /** Soft compose — union values for conflicting keys, no error. */
   merge<S2 extends RecipeMap>(other: Recipe<S2>): Recipe<MergedRecipeMap<S, S2>>;
 
-  /**
-   * Ad-hoc variant additions — extend this recipe's shape with extra keys.
-   * Returns a new recipe with the combined shape.
-   */
+  /** Add extra variant keys to this recipe's shape. */
   variants<S2 extends RecipeMap>(extra: S2): Recipe<S & S2>;
 
-  /**
-   * Stamp this shape into a builder by providing class mappings.
-   * @deprecated Prefer passing the recipe directly to `tvs()` instead.
-   */
+  /** Stamp this shape into a builder by providing class mappings. */
   implement(
     classes: VariantMapOf<S> & { base?: string },
   ): TvsBuilder<VariantMapOf<S>, Record<never, never>>;
